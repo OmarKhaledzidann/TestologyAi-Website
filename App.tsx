@@ -718,20 +718,24 @@ window.history.pushState(null, "", window.location.href);
               </div>
             </div>
 
-            {/* ROBOT */}
-            <img
+ <img
   src="/assets/robot.png"
+  alt="AI Robot"
   className="
-    w-[320px]
-    sm:w-[420px]
-    md:w-[520px]
-    lg:w-[820px]
-    max-w-full
+    w-[720px]
+    max-w-none
+
+    scale-[0.55]        /* 📱 موبايل */
+    sm:scale-[0.7]      /* موبايل كبير */
+    md:scale-[0.85]     /* تابلت */
+    lg:scale-100        /* ديسكتوب */
+
     animate-float
     drop-shadow-2xl
-    relative z-10
+    relative
+    z-10
+    origin-center
   "
-  alt="AI Robot"
 />
 
           </div>
