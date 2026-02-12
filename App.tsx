@@ -995,11 +995,12 @@ navigate(`/chapters/${chapter.id}`);
   <div
     className="
       fixed
-      top-16
+      top-32
+      md:top-16
       right-3
       z-40
 
-      scale-[0.65]
+      scale-[0.55]
       sm:scale-90
       md:scale-100
 
@@ -1151,11 +1152,19 @@ mt-1
         <div className="max-w-4xl mx-auto px-6 pt-16 pb-24">
           {/* ===== Score Box ===== */}
           <div className="relative bg-indigo-900 rounded-3xl p-10 text-white text-center mb-14 overflow-hidden">
-            <img
-              src="/assets/halfRobot.png"
-              className="absolute right-8 top-6 w-28 opacity-90"
-            />
+<img
+  src="/assets/halfRobot.png"
+  className="
+    absolute
+    right-2 md:right-8
+    top-2 md:top-6
 
+    w-24 sm:w-28 md:w-32
+
+    opacity-85 md:opacity-90
+    pointer-events-none
+  "
+/>
             <div className="relative z-10">
               <div className="text-4xl font-bold mb-2">{percentage}%</div>
               <p className="text-indigo-200 mb-6">
@@ -1263,6 +1272,39 @@ const ExitConfirmModal = ({
   </div>
 );
 
+const hideScrollTop =
+  location.pathname === "/" ||
+  location.pathname === "/chapters" ||
+  location.pathname.startsWith("/chapters/");
+const [showScrollTop, setShowScrollTop] = useState(false);
+
+useEffect(() => {
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const fullHeight = document.documentElement.scrollHeight;
+
+    if (scrollTop + windowHeight >= fullHeight - 150) {
+      setShowScrollTop(true);
+    } else {
+      setShowScrollTop(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
      <Header
@@ -1280,21 +1322,25 @@ const ExitConfirmModal = ({
             setPendingNavigation("CHAPTERS");
             setShowExitConfirm(true);
           } else {
+
             navigate("/chapters");
           }
         } } onGenerate={function (): void {
           throw new Error("Function not implemented.");
         } }/>
 
- {!hideBackButton && (
-      <BackButton
-        isInQuiz={isInQuiz}
-        onExitQuiz={() => {
-          setPendingNavigation("HOME");
-          setShowExitConfirm(true);
-        }}
-      />
-    )}
+{!hideBackButton && (
+  <div className="hidden md:block">
+    <BackButton
+      isInQuiz={isInQuiz}
+      onExitQuiz={() => {
+        setPendingNavigation("HOME");
+        setShowExitConfirm(true);
+      }}
+    />
+  </div>
+)}
+
 
 {showExitConfirm && (
   <ExitConfirmModal
@@ -1323,6 +1369,34 @@ const ExitConfirmModal = ({
 
   </Routes>
 </main>
+{showScrollTop && !hideScrollTop && (
+  <button
+    onClick={scrollToTop}
+  className="
+  fixed
+  bottom-24 md:bottom-16
+  right-5 md:right-10
+  z-50
+
+  w-11 h-11
+  md:w-12 md:h-12
+
+  rounded-full
+  bg-indigo-600
+  hover:bg-indigo-700
+  text-white
+
+  flex items-center justify-center
+  shadow-xl
+  transition-all duration-300
+  active:scale-95
+"
+
+  >
+    <ChevronRight className="rotate-[-90deg] w-5 h-5" />
+  </button>
+)}
+
       <Footer />
     </div>
   );
