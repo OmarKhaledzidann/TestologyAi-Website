@@ -86,65 +86,96 @@ const Header: React.FC<{
   onHome: () => void;
   onChapters: () => void;
   onGenerate: () => void;
-}> = ({ currentView, onHome, onChapters, onGenerate }) => (
-  <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-12 md:h-14">
-    <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-      
-      <div onClick={onHome} className="flex items-center gap-2 cursor-pointer">
-        <img
-          src="/assets/logo.png"
-          alt="AIXam Logo"
-          className="w-8 h-8 object-contain"
-        />
-        <span className="font-bold text-base">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-           <span className="text-xl font-semibold text-black">TestologyAI</span>
+}> = ({ currentView, onHome, onChapters }) => {
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-12 md:h-14 relative">
+      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+        
+        {/* Logo */}
+        <div onClick={onHome} className="flex items-center gap-2 cursor-pointer">
+          <img
+            src="/assets/logo.png"
+            alt="AIXam Logo"
+            className="w-8 h-8 object-contain"
+          />
+          <span className="text-xl font-semibold text-black">
+            TestologyAI
           </span>
-        </span>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden text-2xl font-bold text-slate-700"
+        >
+          ☰
+        </button>
+
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-12 text-sm">
+          <span
+            onClick={onHome}
+            className="cursor-pointer text-lg font-semibold text-slate-500 hover:text-indigo-600"
+          >
+            Home
+          </span>
+
+          <span
+            onClick={onChapters}
+            className="cursor-pointer text-lg font-semibold text-slate-500 hover:text-indigo-600"
+          >
+            Chapters
+          </span>
+        </nav>
+
+        {/* Avatar */}
+        <a
+          href="https://www.linkedin.com/in/omar-zidan-%F0%9F%8D%89-56b851108"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden md:block"
+        >
+          <img
+            src="/assets/omar.jpg"
+            className="w-12 h-12 rounded-full object-cover border"
+            alt="Omar LinkedIn"
+          />
+        </a>
       </div>
 
-      {/* Nav */}
-      <nav className="hidden md:flex items-center gap-12 text-sm">
-  <span
-    onClick={onHome}
-    className={`cursor-pointer text-lg font-semibold ${
-      currentView === "HOME"
-        ? "text-indigo-600 font-medium"
-        : "text-slate-500 hover:text-indigo-600"
-    }`}
-  >
-    Home
-  </span>
+      {/* Mobile Dropdown */}
+      {isOpen && (
+        <div className="md:hidden absolute top-14 left-0 w-full bg-white shadow-lg border-t z-50">
+          <div className="flex flex-col p-4 gap-4">
+            <span
+              onClick={() => {
+                onHome();
+                setIsOpen(false);
+              }}
+              className="cursor-pointer text-slate-700 hover:text-indigo-600"
+            >
+              Home
+            </span>
 
-  <span
-    onClick={onChapters}
-    className={`cursor-pointer text-lg font-semibold ${
-      currentView === "CHAPTERS"
-        ? "text-indigo-600 font-medium"
-        : "text-slate-500 hover:text-indigo-600"
-    }`}
-  >
-    Chapters
-  </span>
-</nav>
+            <span
+              onClick={() => {
+                onChapters();
+                setIsOpen(false);
+              }}
+              className="cursor-pointer text-slate-700 hover:text-indigo-600"
+            >
+              Chapters
+            </span>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
 
-      {/* Avatar */}
-      <a
-  href="https://www.linkedin.com/in/omar-zidan-%F0%9F%8D%89-56b851108"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  <img
-    src="/assets/omar.jpg"
-    className="w-12 h-12 rounded-full object-cover border cursor-pointer hover:scale-105 transition"
-    alt="Omar LinkedIn"
-  />
-</a>
-
-
-    </div>
-  </header>
-);
 const Footer = () => {
   return (
     <footer className="md:fixed static bottom-0 left-0 right-0 border-t border-slate-200 bg-white z-50">
@@ -339,7 +370,7 @@ const BackButton = ({
       }}
       className="
         group
-        fixed z-50
+        fixed z-40
         top-14 left-3        /* 📱 موبايل */
         md:top-20 md:left-6  /* 💻 ديسكتوب */
 
@@ -357,10 +388,11 @@ const BackButton = ({
         transition-all duration-300
         active:scale-95
 
-        hover:bg-white
-        hover:text-transparent
-        hover:bg-clip-text
-        hover:border-indigo-300
+md:hover:bg-white
+md:hover:text-transparent
+md:hover:bg-clip-text
+md:hover:border-indigo-300
+
       "
     >
       <ChevronRight
@@ -451,16 +483,14 @@ const hideBackButton =
 useEffect(() => {
   if (!isInQuiz) return;
 
-  const handlePopState = (e: PopStateEvent) => {
-    e.preventDefault();
+ const handlePopState = (e: PopStateEvent) => {
+  if (!isInQuiz) return;
 
-    // كل مرة نرجّع state جديد
-    window.history.pushState(null, "", window.location.href);
+  e.preventDefault();
 
-    // وكل مرة نطلع المودال
-    setPendingNavigation("HOME");
-    setShowExitConfirm(true);
-  };
+  setPendingNavigation("HOME");
+  setShowExitConfirm(true);
+};
 
   window.addEventListener("popstate", handlePopState);
 
@@ -550,7 +580,6 @@ const cancelExit = () => {
       score: 0,
     });
     navigate("/quiz", { replace: false });
-window.history.pushState(null, "", window.location.href);
   };
   const startChapterExam = (chapter: Chapter) => {
     if (!chapter.exam) return;
@@ -633,7 +662,7 @@ window.history.pushState(null, "", window.location.href);
 
   // --- Views ---
   const renderHome = () => (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
 
@@ -725,10 +754,10 @@ window.history.pushState(null, "", window.location.href);
     w-[720px]
     max-w-none
 
-    scale-[0.55]        /* 📱 موبايل */
-    sm:scale-[0.7]      /* موبايل كبير */
-    md:scale-[0.85]     /* تابلت */
-    lg:scale-100        /* ديسكتوب */
+    scale-[0.55]       
+    sm:scale-[0.7]      
+    md:scale-[0.85]     
+    lg:scale-100        
 
     animate-float
     drop-shadow-2xl
@@ -888,14 +917,19 @@ navigate(`/chapters/${chapter.id}`);
       }
     `}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <div
           className={`
-          w-5 h-5 rounded-full border flex items-center justify-center
-          ${selected ? "border-indigo-600 bg-indigo-600" : "border-slate-400"}
-        `}
+            w-5 h-5 min-w-[20px] min-h-[20px]
+            rounded-full border
+            flex items-center justify-center
+            shrink-0 mt-1
+            ${selected ? "border-indigo-600 bg-indigo-600" : "border-slate-400"}
+          `}
         >
-          {selected && <div className="w-2 h-2 rounded-full bg-white" />}
+          {selected && (
+            <div className="w-2 h-2 rounded-full bg-white" />
+          )}
         </div>
 
         <span className="text-slate-700 text-sm">{text}</span>
@@ -963,7 +997,7 @@ navigate(`/chapters/${chapter.id}`);
       fixed
       top-16
       right-3
-      z-50
+      z-40
 
       scale-[0.65]
       sm:scale-90
@@ -987,10 +1021,11 @@ navigate(`/chapters/${chapter.id}`);
           src="/assets/halfRobot.png"
           alt="AI Robot"
           className="
-          fixed right-8 top-1/2 translate-y-8
-          w-40 lg:w-48 xl:w-56
-          z-20 pointer-events-none"
-        />
+  hidden lg:block
+  fixed right-8 top-1/2 translate-y-8
+  w-40 lg:w-48 xl:w-56
+  z-20 pointer-events-none
+"        />
 
         <div className="max-w-4xl mx-auto px-6 pt-14 pb-32 space-y-10">
           {/* ===== TOP INFO ===== */}
@@ -1036,7 +1071,7 @@ navigate(`/chapters/${chapter.id}`);
                       key={oIdx}
                       onClick={() => handleAnswerSelect(qIdx, oIdx)}
                       className={`
-                      flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer
+                      flex items-start gap-3 px-4 py-3 rounded-xl cursor-pointer
                       border transition
                       ${
                         selected
@@ -1047,7 +1082,13 @@ navigate(`/chapters/${chapter.id}`);
                     >
                       <div
                         className={`
-                        w-4 h-4 rounded-full border flex items-center justify-center
+                        w-5 h-5
+min-w-[20px] min-h-[20px]
+rounded-full
+border
+flex items-center justify-center
+shrink-0
+mt-1
                         ${
                           selected
                             ? "border-indigo-500 bg-indigo-500"
@@ -1071,7 +1112,7 @@ navigate(`/chapters/${chapter.id}`);
           {/* ===== SUBMIT ===== */}
           <div className="flex justify-end pt-6">
             <Button
-              className="px-14 rounded-full"
+              className="px-8 sm:px-14 rounded-full w-full sm:w-auto"
               disabled={quizState.answers.includes(null)}
               onClick={handleSubmit}
             >
@@ -1177,7 +1218,12 @@ const ExitConfirmModal = ({
   onCancel: () => void;
 }) => (
   <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center">
-    <div className="bg-white rounded-3xl w-[440px] p-8 shadow-2xl border border-slate-100">
+    <div className="
+  bg-white rounded-3xl
+  w-[90%] sm:w-[440px]
+  p-6 sm:p-8
+"
+>
       
       {/* Icon */}
       <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
