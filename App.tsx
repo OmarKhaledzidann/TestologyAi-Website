@@ -1021,20 +1021,21 @@ export default function App() {
 
         <div className="max-w-4xl mx-auto px-6 pt-14 pb-32 space-y-10">
           {/* ===== TOP INFO ===== */}
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl px-6 py-4 flex items-center justify-between shadow-sm">
-            <div>
-              <h2 className="font-bold text-lg text-indigo-600">
-                {activeChapter?.title}
-              </h2>
-              <p className="text-sm text-slate-500">
-                {isFinalExam ? "Exam Mode" : "Practice Mode"}
-              </p>
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl px-4 sm:px-6 py-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2 className="font-bold text-base sm:text-lg text-indigo-600">
+                  {activeChapter?.title}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  {isFinalExam ? "Exam Mode" : "Practice Mode"}
+                </p>
+              </div>
+              <span className="text-xs sm:text-sm font-semibold text-slate-500 self-start sm:self-auto">
+                {quizState.answers.filter((a) => a !== null).length} /{" "}
+                {currentQuestions.length}
+              </span>
             </div>
-
-            <span className="text-sm font-semibold text-slate-500">
-              {quizState.answers.filter((a) => a !== null).length} /{" "}
-              {currentQuestions.length}
-            </span>
           </div>
 
           {/* ===== QUESTIONS ===== */}
