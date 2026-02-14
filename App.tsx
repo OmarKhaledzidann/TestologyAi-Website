@@ -406,6 +406,7 @@ md:hover:border-indigo-300
 const ScrollToTop = () => {
   const location = useLocation();
 
+   
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -417,6 +418,8 @@ const ScrollToTop = () => {
   return null;
 };
 
+ 
+  
 export default function App() {
   const [view, setView] = useState<ViewState>("HOME");
   const [activeChapter, setActiveChapter] = useState<Chapter | null>(null);
@@ -449,7 +452,7 @@ export default function App() {
     location.pathname === "/quiz" ||
     location.pathname === "/results";
 
-  /* ================= TIMER ================= */
+  /*   === TIMER   === */
   const EXAM_DURATION = 60 * 60; // 60 minutes
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
@@ -476,6 +479,7 @@ export default function App() {
   }, [view]);
   useEffect(() => {
     if (!isInQuiz) return;
+   
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -504,12 +508,40 @@ export default function App() {
   };
 
   window.addEventListener("popstate", handlePopState);
+ 
 
-  return () => {
-    window.removeEventListener("popstate", handlePopState);
-  };
-}, [isInQuiz]);
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
 
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isInQuiz]);
+  useEffect(() => {
+    if (!isInQuiz) return;
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (!isInQuiz) return;
+
+      e.preventDefault();
+
+      setPendingNavigation("HOME");
+      setShowExitConfirm(true);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+  
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isInQuiz]);
+
+   
 
   useEffect(() => {
     if (!activeChapter || currentQuestions.length === 0) return;
@@ -531,6 +563,28 @@ export default function App() {
 
     const data = JSON.parse(saved);
 
+ 
+  useEffect(() => {
+    if (!activeChapter || currentQuestions.length === 0) return;
+
+    sessionStorage.setItem(
+      QUIZ_STORAGE_KEY,
+      JSON.stringify({
+        activeChapter,
+        currentQuestions,
+        quizState,
+        isExamMode,
+        timeLeft,
+      })
+    );
+  }, [activeChapter, currentQuestions, quizState, isExamMode, timeLeft]);
+  useEffect(() => {
+    const saved = sessionStorage.getItem(QUIZ_STORAGE_KEY);
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+  
     setActiveChapter(data.activeChapter);
     setCurrentQuestions(data.currentQuestions);
     setQuizState(data.quizState);
@@ -544,7 +598,10 @@ export default function App() {
   }, []);
 
   const confirmExit = () => {
+   
     sessionStorage.setItem("quiz_locked", "true");
+ 
+  
     setShowExitConfirm(false);
 
     setActiveChapter(null);
@@ -611,8 +668,13 @@ export default function App() {
     });
 
     setTimeLeft(EXAM_DURATION);
+   
     navigate("/quiz", { replace: true });
 
+  
+ 
+    navigate("/quiz", { replace: false });
+    window.history.pushState(null, "", window.location.href);
   
   };
 
@@ -694,7 +756,7 @@ export default function App() {
   items-center
 "
       >
-        {/* ================= LEFT ================= */}
+        {/*   === LEFT   === */}
         <div className="space-y-8">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">
             ✨ AI-Powered Certification Prep
@@ -731,7 +793,7 @@ export default function App() {
             </Button>
           </div>
         </div>
-        {/* ================= RIGHT ================= */}
+        {/*   === RIGHT   === */}
         <div className="relative flex justify-center">
           {/* Glow خلف الروبوت */}
           <div
@@ -810,7 +872,7 @@ export default function App() {
     >
       <div className="relative max-w-7xl mx-auto px-6 pt-6 pb-24">
         <div className="grid lg:grid-cols-2 gap-24 items-start">
-          {/* ================= LEFT ================= */}
+          {/*   === LEFT   === */}
           <div className="space-y-6 mt-6">
             <h2 className="text-4xl font-bold text-slate-900">
               Choose a Chapter
@@ -891,7 +953,7 @@ export default function App() {
             </button>*/}
           </div>
 
-          {/* ================= RIGHT (ROBOT SAME AS HOME) ================= */}
+          {/*   === RIGHT (ROBOT SAME AS HOME)   === */}
           <div className="relative flex justify-center">
             {/* Glow */}
             <div
@@ -998,7 +1060,7 @@ export default function App() {
     </Card>
   );
 
-  /* ================= QUIZ RENDER ================= */
+  /*   === QUIZ RENDER   === */
   const renderQuiz = () => {
     const isFinalExam = activeChapter?.id.includes("exam") ?? false;
 
@@ -1373,6 +1435,7 @@ mt-1
 
       {showCelebration && <Celebration />}
       <main className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+   
           <ScrollToTop />
         <Routes>
           <Route path="/" element={renderHome()} />
@@ -1433,6 +1496,52 @@ mt-1
         </button>
       )}
 
+ 
+        <Routes>
+          <Route path="/" element={renderHome()} />
+          <Route path="/chapters" element={renderChapters()} />
+          <Route path="/quiz" element={renderQuiz()} />
+          <Route path="/results" element={renderResults()} />
+          <Route path="*" element={<Navigate to="/" />} />
+          <Route
+            path="/chapters/:chapterId"
+            element={
+              <ChapterOptionsPage
+                startChapter={startChapter}
+                startChapterExam={startChapterExam}
+              />
+            }
+          />
+        </Routes>
+      </main>
+      {showScrollTop && !hideScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="
+  fixed
+  bottom-24 md:bottom-16
+  right-5 md:right-10
+  z-50
+
+  w-11 h-11
+  md:w-12 md:h-12
+
+  rounded-full
+  bg-indigo-600
+  hover:bg-indigo-700
+  text-white
+
+  flex items-center justify-center
+  shadow-xl
+  transition-all duration-300
+  active:scale-95
+"
+        >
+          <ChevronRight className="rotate-[-90deg] w-5 h-5" />
+        </button>
+      )}
+
+  
       <Footer />
     </div>
   );
