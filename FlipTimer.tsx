@@ -26,8 +26,7 @@ const FlipDigit = ({ value }: { value: string }) => {
     >
       {value}
 
-      {/* الخط الفاصل */}
-      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-black/70" />
+      
     </div>
   );
 };

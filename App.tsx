@@ -87,23 +87,22 @@ const Header: React.FC<{
   onChapters: () => void;
   onGenerate: () => void;
 }> = ({ currentView, onHome, onChapters }) => {
-
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-12 md:h-14 relative">
       <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-        
         {/* Logo */}
-        <div onClick={onHome} className="flex items-center gap-2 cursor-pointer">
+        <div
+          onClick={onHome}
+          className="flex items-center gap-2 cursor-pointer"
+        >
           <img
             src="/assets/logo.png"
             alt="AIXam Logo"
             className="w-8 h-8 object-contain"
           />
-          <span className="text-xl font-semibold text-black">
-            TestologyAI
-          </span>
+          <span className="text-xl font-semibold text-black">TestologyAI</span>
         </div>
 
         {/* Mobile Menu Button */}
@@ -122,7 +121,6 @@ const Header: React.FC<{
           >
             Home
           </span>
-
           <span
             onClick={onChapters}
             className="cursor-pointer text-lg font-semibold text-slate-500 hover:text-indigo-600"
@@ -155,20 +153,20 @@ const Header: React.FC<{
                 onHome();
                 setIsOpen(false);
               }}
-              className="cursor-pointer text-slate-700 hover:text-indigo-600"
+              className="cursor-pointer text-slate-700 hover:text-indigo-600 hover:bg-blue-100 px-4 py-3 rounded-lg transition-all duration-200 block"
             >
               Home
             </span>
 
-            <span
+            <div
               onClick={() => {
                 onChapters();
                 setIsOpen(false);
               }}
-              className="cursor-pointer text-slate-700 hover:text-indigo-600"
+              className="cursor-pointer text-slate-700 hover:text-indigo-600 hover:bg-blue-100 px-4 py-3 rounded-lg transition-all duration-200 -mx-2"
             >
               Chapters
-            </span>
+            </div>
           </div>
         </div>
       )}
@@ -290,8 +288,7 @@ const ChapterOptionsPage = ({
   const { chapterId } = useParams();
   const navigate = useNavigate();
 
-  const chapter =
-    PRACTICE_CHAPTERS.find((c) => c.id === chapterId) || null;
+  const chapter = PRACTICE_CHAPTERS.find((c) => c.id === chapterId) || null;
 
   if (!chapter) {
     navigate("/chapters", { replace: true });
@@ -313,7 +310,6 @@ const ChapterOptionsPage = ({
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-
           <Card
             hoverable
             onClick={() => startChapter(chapter)}
@@ -407,7 +403,19 @@ md:hover:border-indigo-300
     </button>
   );
 };
+const ScrollToTop = () => {
+  const location = useLocation();
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [location.pathname]);
+
+  return null;
+};
 
 export default function App() {
   const [view, setView] = useState<ViewState>("HOME");
@@ -429,21 +437,21 @@ export default function App() {
   const [currentQuestions, setCurrentQuestions] = useState<Question[]>([]);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
-  const [pendingNavigation, setPendingNavigation] = useState<null | "HOME" | "CHAPTERS">(null);
-const location = useLocation();
+  const [pendingNavigation, setPendingNavigation] = useState<
+    null | "HOME" | "CHAPTERS"
+  >(null);
+  const location = useLocation();
 
-const isInQuiz = location.pathname === "/quiz";
+  const isInQuiz = location.pathname === "/quiz";
 
-const hideBackButton =
-  location.pathname === "/" ||
-  location.pathname === "/quiz" ||
-  location.pathname === "/results";
-
+  const hideBackButton =
+    location.pathname === "/" ||
+    location.pathname === "/quiz" ||
+    location.pathname === "/results";
 
   /* ================= TIMER ================= */
   const EXAM_DURATION = 60 * 60; // 60 minutes
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
-
 
   useEffect(() => {
     if (timeLeft === null) return;
@@ -467,30 +475,33 @@ const hideBackButton =
     });
   }, [view]);
   useEffect(() => {
+    if (!isInQuiz) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isInQuiz]);
+ useEffect(() => {
   if (!isInQuiz) return;
 
-  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+  // نضيف state وهمي علشان نمنع الرجوع
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = (e: PopStateEvent) => {
     e.preventDefault();
-    e.returnValue = "";
+
+    window.history.pushState(null, "", window.location.href);
+
+    setPendingNavigation("HOME");
+    setShowExitConfirm(true);
   };
-
-  window.addEventListener("beforeunload", handleBeforeUnload);
-
-  return () => {
-    window.removeEventListener("beforeunload", handleBeforeUnload);
-  };
-}, [isInQuiz]);
-useEffect(() => {
-  if (!isInQuiz) return;
-
- const handlePopState = (e: PopStateEvent) => {
-  if (!isInQuiz) return;
-
-  e.preventDefault();
-
-  setPendingNavigation("HOME");
-  setShowExitConfirm(true);
-};
 
   window.addEventListener("popstate", handlePopState);
 
@@ -499,59 +510,59 @@ useEffect(() => {
   };
 }, [isInQuiz]);
 
-useEffect(() => {
-  if (!activeChapter || currentQuestions.length === 0) return;
 
-  sessionStorage.setItem(
-    QUIZ_STORAGE_KEY,
-    JSON.stringify({
-      activeChapter,
-      currentQuestions,
-      quizState,
-      isExamMode,
-      timeLeft,
-    })
-  );
-}, [activeChapter, currentQuestions, quizState, isExamMode, timeLeft]);
-useEffect(() => {
-  const saved = sessionStorage.getItem(QUIZ_STORAGE_KEY);
-  if (!saved) return;
+  useEffect(() => {
+    if (!activeChapter || currentQuestions.length === 0) return;
 
-  const data = JSON.parse(saved);
+    sessionStorage.setItem(
+      QUIZ_STORAGE_KEY,
+      JSON.stringify({
+        activeChapter,
+        currentQuestions,
+        quizState,
+        isExamMode,
+        timeLeft,
+      })
+    );
+  }, [activeChapter, currentQuestions, quizState, isExamMode, timeLeft]);
+  useEffect(() => {
+    const saved = sessionStorage.getItem(QUIZ_STORAGE_KEY);
+    if (!saved) return;
 
-  setActiveChapter(data.activeChapter);
-  setCurrentQuestions(data.currentQuestions);
-  setQuizState(data.quizState);
-  setIsExamMode(data.isExamMode);
-  setTimeLeft(data.timeLeft ?? null);
+    const data = JSON.parse(saved);
 
-  // لو كان في Quiz قبل الريلود
-  if (location.pathname === "/quiz" || location.pathname === "/results") {
-    navigate(location.pathname, { replace: true });
-  }
-}, []);
+    setActiveChapter(data.activeChapter);
+    setCurrentQuestions(data.currentQuestions);
+    setQuizState(data.quizState);
+    setIsExamMode(data.isExamMode);
+    setTimeLeft(data.timeLeft ?? null);
 
+    // لو كان في Quiz قبل الريلود
+    if (location.pathname === "/quiz" || location.pathname === "/results") {
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
 
   const confirmExit = () => {
-  setShowExitConfirm(false);
+    sessionStorage.setItem("quiz_locked", "true");
+    setShowExitConfirm(false);
 
-  setActiveChapter(null);
-  setCurrentQuestions([]);
-  setQuizState({ answers: [], isSubmitted: false, score: 0 });
-  setTimeLeft(null);
-  setIsExamMode(false);
+    setActiveChapter(null);
+    setCurrentQuestions([]);
+    setQuizState({ answers: [], isSubmitted: false, score: 0 });
+    setTimeLeft(null);
+    setIsExamMode(false);
 
-  if (pendingNavigation === "HOME") navigate("/");
-  if (pendingNavigation === "CHAPTERS") navigate("/chapters");
+    if (pendingNavigation === "HOME") navigate("/");
+    if (pendingNavigation === "CHAPTERS") navigate("/chapters");
 
-  setPendingNavigation(null);
-};
+    setPendingNavigation(null);
+  };
 
-const cancelExit = () => {
-  setShowExitConfirm(false);
-  setPendingNavigation(null);
-};
-
+  const cancelExit = () => {
+    setShowExitConfirm(false);
+    setPendingNavigation(null);
+  };
 
   // Icon mapping
   const getIcon = (iconName: string) => {
@@ -572,6 +583,8 @@ const cancelExit = () => {
   };
 
   const startChapter = (chapter: Chapter) => {
+    sessionStorage.removeItem("quiz_locked");
+
     setActiveChapter(chapter);
     setCurrentQuestions(chapter.questions);
     setQuizState({
@@ -579,9 +592,12 @@ const cancelExit = () => {
       isSubmitted: false,
       score: 0,
     });
-    navigate("/quiz", { replace: false });
+    navigate("/quiz", { replace: true });
+
   };
   const startChapterExam = (chapter: Chapter) => {
+    sessionStorage.removeItem("quiz_locked");
+
     if (!chapter.exam) return;
 
     setIsExamMode(true); // ✅ تايمر يشتغل في الاتنين
@@ -595,8 +611,9 @@ const cancelExit = () => {
     });
 
     setTimeLeft(EXAM_DURATION);
-    navigate("/quiz", { replace: false });
-window.history.pushState(null, "", window.location.href);
+    navigate("/quiz", { replace: true });
+
+  
   };
 
   const handleGenerateAI = async () => {
@@ -644,7 +661,8 @@ window.history.pushState(null, "", window.location.href);
     const isFinalExam = isExamMode;
 
     setQuizState({ ...quizState, isSubmitted: true, score });
-    navigate("/results");
+    navigate("/results", { replace: true });
+
 
     // ✅ لفوق فورًا بعد السبمت
     window.scrollTo({
@@ -666,26 +684,28 @@ window.history.pushState(null, "", window.location.href);
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
 
-      <div className="
+      <div
+        className="
   relative max-w-7xl mx-auto
   px-4 sm:px-6
   pt-20 sm:pt-24
   grid grid-cols-1 lg:grid-cols-2
   gap-16 lg:gap-28
   items-center
-">
-
+"
+      >
         {/* ================= LEFT ================= */}
         <div className="space-y-8">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">
             ✨ AI-Powered Certification Prep
           </span>
 
-          <h1 className="
+          <h1
+            className="
   text-4xl sm:text-5xl lg:text-6xl
   font-bold leading-tight text-slate-900
-">
-
+"
+          >
             Discover Smarter <br />
             Learning With{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
@@ -700,21 +720,22 @@ window.history.pushState(null, "", window.location.href);
 
           <div className="flex items-center gap-6">
             <Button
-  onClick={() => navigate("/chapters")}
-  className="
+              onClick={() => navigate("/chapters")}
+              className="
     px-10 rounded-full
     bg-indigo-600 text-white hover:bg-indigo-700
     w-full sm:w-auto
   "
->
-  Get Started <ArrowRight className="w-5 h-5" />
-</Button>
+            >
+              Get Started <ArrowRight className="w-5 h-5" />
+            </Button>
           </div>
         </div>
         {/* ================= RIGHT ================= */}
         <div className="relative flex justify-center">
           {/* Glow خلف الروبوت */}
-          <div className="
+          <div
+            className="
   absolute
   w-[320px] h-[320px]
   sm:w-[420px] sm:h-[420px]
@@ -724,8 +745,8 @@ window.history.pushState(null, "", window.location.href);
   rounded-full
   blur-3xl
   pointer-events-none
-"/>
-
+"
+          />
 
           <div className="relative">
             {/* Badge فوق */}
@@ -747,10 +768,10 @@ window.history.pushState(null, "", window.location.href);
               </div>
             </div>
 
- <img
-  src="/assets/robot.png"
-  alt="AI Robot"
-  className="
+            <img
+              src="/assets/robot.png"
+              alt="AI Robot"
+              className="
     w-[720px]
     max-w-none
 
@@ -765,21 +786,20 @@ window.history.pushState(null, "", window.location.href);
     z-10
     origin-center
   "
-/>
-
+            />
           </div>
         </div>
       </div>
     </section>
   );
-const chapterNumbers = [
-  "/assets/one.png",
-  "/assets/two.png",
-  "/assets/three.png",
-  "/assets/four.png",
-  "/assets/five.png",
-  "/assets/logo.png",
-];
+  const chapterNumbers = [
+    "/assets/one.png",
+    "/assets/two.png",
+    "/assets/three.png",
+    "/assets/four.png",
+    "/assets/five.png",
+    "/assets/logo.png",
+  ];
 
   const renderChapters = () => (
     <section
@@ -806,7 +826,7 @@ const chapterNumbers = [
                   if (chapter.id === "GenAI-Mock-exam") {
                     startChapterExam(chapter); // ✅ Exam Mode + Timer
                   } else {
-navigate(`/chapters/${chapter.id}`);
+                    navigate(`/chapters/${chapter.id}`);
                   }
                 }}
                 className={`
@@ -830,17 +850,17 @@ navigate(`/chapters/${chapter.id}`);
                             `}
               >
                 <div className="flex items-center gap-4">
-<div className="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow">
-  {index < 6  ? (
-    <img
-      src={chapterNumbers[index]}
-      alt={`Chapter ${index + 1}`}
-      className="w-6 h-6 object-contain"
-    />
-  ) : (
-    <Bot className="w-5 h-5 text-indigo-600" />
-  )}
-</div>
+                  <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow">
+                    {index < 6 ? (
+                      <img
+                        src={chapterNumbers[index]}
+                        alt={`Chapter ${index + 1}`}
+                        className="w-6 h-6 object-contain"
+                      />
+                    ) : (
+                      <Bot className="w-5 h-5 text-indigo-600" />
+                    )}
+                  </div>
 
                   <div>
                     <h4 className="font-semibold text-slate-800">
@@ -874,7 +894,8 @@ navigate(`/chapters/${chapter.id}`);
           {/* ================= RIGHT (ROBOT SAME AS HOME) ================= */}
           <div className="relative flex justify-center">
             {/* Glow */}
-            <div className="
+            <div
+              className="
   absolute
   w-[320px] h-[320px]
   sm:w-[420px] sm:h-[420px]
@@ -884,8 +905,8 @@ navigate(`/chapters/${chapter.id}`);
   rounded-full
   blur-3xl
   pointer-events-none
-"/>
-
+"
+            />
 
             <img
               src="/assets/robot.png"
@@ -927,16 +948,13 @@ navigate(`/chapters/${chapter.id}`);
             ${selected ? "border-indigo-600 bg-indigo-600" : "border-slate-400"}
           `}
         >
-          {selected && (
-            <div className="w-2 h-2 rounded-full bg-white" />
-          )}
+          {selected && <div className="w-2 h-2 rounded-full bg-white" />}
         </div>
 
         <span className="text-slate-700 text-sm">{text}</span>
       </div>
     </div>
   );
-
 
   const QuizHeader = ({
     title,
@@ -979,7 +997,6 @@ navigate(`/chapters/${chapter.id}`);
       </div>
     </Card>
   );
-  
 
   /* ================= QUIZ RENDER ================= */
   const renderQuiz = () => {
@@ -990,16 +1007,16 @@ navigate(`/chapters/${chapter.id}`);
         className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
         style={{ backgroundImage: "url('/assets/backGround.png')" }}
       >
-       
-{isFinalExam && timeLeft !== null && (
-  <div
-    className="
+        {isFinalExam && timeLeft !== null && (
+          <div
+            className="
       fixed
-      top-16
+      top-32
+      md:top-16
       right-3
       z-40
 
-      scale-[0.65]
+      scale-[0.55]
       sm:scale-90
       md:scale-100
 
@@ -1010,11 +1027,10 @@ navigate(`/chapters/${chapter.id}`);
       shadow-lg
       px-2 py-1
     "
-  >
-    <FlipTimer timeLeft={timeLeft} />
-  </div>
-)}
-
+          >
+            <FlipTimer timeLeft={timeLeft} />
+          </div>
+        )}
 
         {/* ===== FLOATING HALF ROBOT ===== */}
         <img
@@ -1025,24 +1041,26 @@ navigate(`/chapters/${chapter.id}`);
   fixed right-8 top-1/2 translate-y-8
   w-40 lg:w-48 xl:w-56
   z-20 pointer-events-none
-"        />
+"
+        />
 
         <div className="max-w-4xl mx-auto px-6 pt-14 pb-32 space-y-10">
           {/* ===== TOP INFO ===== */}
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl px-6 py-4 flex items-center justify-between shadow-sm">
-            <div>
-              <h2 className="font-bold text-lg text-indigo-600">
-                {activeChapter?.title}
-              </h2>
-              <p className="text-sm text-slate-500">
-                {isFinalExam ? "Exam Mode" : "Practice Mode"}
-              </p>
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl px-4 sm:px-6 py-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2 className="font-bold text-base sm:text-lg text-indigo-600">
+                  {activeChapter?.title}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  {isFinalExam ? "Exam Mode" : "Practice Mode"}
+                </p>
+              </div>
+              <span className="text-xs sm:text-sm font-semibold text-slate-500 self-start sm:self-auto">
+                {quizState.answers.filter((a) => a !== null).length} /{" "}
+                {currentQuestions.length}
+              </span>
             </div>
-
-            <span className="text-sm font-semibold text-slate-500">
-              {quizState.answers.filter((a) => a !== null).length} /{" "}
-              {currentQuestions.length}
-            </span>
           </div>
 
           {/* ===== QUESTIONS ===== */}
@@ -1124,19 +1142,22 @@ mt-1
       </section>
     );
   };
-  const handleRetry = () => {
-    setQuizState({
-      answers: new Array(currentQuestions.length).fill(null),
-      isSubmitted: false,
-      score: 0,
-    });
+ const handleRetry = () => {
+  sessionStorage.removeItem("quiz_locked");
 
-    if (activeChapter?.id.includes("exam")) {
-      setTimeLeft(EXAM_DURATION);
-    }
+  // نصفر الإجابات فقط
+  setQuizState({
+    answers: new Array(currentQuestions.length).fill(null),
+    isSubmitted: false,
+    score: 0,
+  });
 
-    navigate("/quiz");
-  };
+  // نرجع التايمر لو Exam
+  if (isExamMode) {
+    setTimeLeft(EXAM_DURATION);
+  }
+};
+
 
   const renderResults = () => {
     const percentage = Math.round(
@@ -1153,9 +1174,17 @@ mt-1
           <div className="relative bg-indigo-900 rounded-3xl p-10 text-white text-center mb-14 overflow-hidden">
             <img
               src="/assets/halfRobot.png"
-              className="absolute right-8 top-6 w-28 opacity-90"
-            />
+              className="
+    absolute
+    right-2 md:right-8
+    top-2 md:top-6
 
+    w-24 sm:w-28 md:w-32
+
+    opacity-85 md:opacity-90
+    pointer-events-none
+  "
+            />
             <div className="relative z-10">
               <div className="text-4xl font-bold mb-2">{percentage}%</div>
               <p className="text-indigo-200 mb-6">
@@ -1167,7 +1196,10 @@ mt-1
                   <RotateCcw className="w-4 h-4" />
                   Retry
                 </Button>
-                <Button onClick={() => navigate("/chapters")}>
+                <Button
+                  onClick={() => navigate("/chapters")}
+                  className="shadow-none"
+                >
                   Back to Chapters
                 </Button>
               </div>
@@ -1210,62 +1242,97 @@ mt-1
       </section>
     );
   };
-const ExitConfirmModal = ({
-  onConfirm,
-  onCancel,
-}: {
-  onConfirm: () => void;
-  onCancel: () => void;
-}) => (
-  <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center">
-    <div className="
+  const ExitConfirmModal = ({
+    onConfirm,
+    onCancel,
+  }: {
+    onConfirm: () => void;
+    onCancel: () => void;
+  }) => (
+    <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center">
+      <div
+        className="
   bg-white rounded-3xl
   w-[90%] sm:w-[440px]
   p-6 sm:p-8
 "
->
-      
-      {/* Icon */}
-      <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
-        <XCircle className="w-7 h-7 text-red-500" />
-      </div>
+      >
+        {/* Icon */}
+        <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
+          <XCircle className="w-7 h-7 text-red-500" />
+        </div>
 
-      {/* Title */}
-      <h3 className="text-xl font-semibold text-slate-800 text-center mb-2">
-        Leave Quiz?
-      </h3>
+        {/* Title */}
+        <h3 className="text-xl font-semibold text-slate-800 text-center mb-2">
+          Leave Quiz?
+        </h3>
 
-      {/* Description */}
-      <p className="text-sm text-slate-600 text-center leading-relaxed mb-8">
-        You’re about to leave the current session.<br />
-        Your progress and selected answers will be
-        <span className="font-semibold text-slate-800"> permanently discarded</span>.
-      </p>
+        {/* Description */}
+        <p className="text-sm text-slate-600 text-center leading-relaxed mb-8">
+          You’re about to leave the current session.
+          <br />
+          Your progress and selected answers will be
+          <span className="font-semibold text-slate-800">
+            {" "}
+            permanently discarded
+          </span>
+          .
+        </p>
 
-      {/* Actions */}
-      <div className="flex gap-4">
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={onCancel}
-        >
-          Stay & Continue
-        </Button>
+        {/* Actions */}
+        <div className="flex gap-2 sm:gap-4">
+          <Button
+            variant="secondary"
+            className="w-full py-1.5 text-xs sm:py-3 sm:text-base"
+            onClick={onCancel}
+          >
+            Stay & Continue
+          </Button>
 
-        <Button
-          className="w-full bg-red-600 hover:bg-red-700 text-white"
-          onClick={onConfirm}
-        >
-          Exit Quiz
-        </Button>
+          <Button
+            className="w-full py-1.5 text-xs sm:py-3 sm:text-base bg-red-600 hover:bg-red-700 text-white"
+            onClick={onConfirm}
+          >
+            Exit Quiz
+          </Button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+
+  const hideScrollTop =
+    location.pathname === "/" ||
+    location.pathname === "/chapters" ||
+    location.pathname.startsWith("/chapters/");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+
+      if (scrollTop + windowHeight >= fullHeight - 150) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
-     <Header
+      <Header
         currentView={view}
         onHome={() => {
           if (isInQuiz) {
@@ -1274,7 +1341,7 @@ const ExitConfirmModal = ({
           } else {
             navigate("/");
           }
-        } }
+        }}
         onChapters={() => {
           if (isInQuiz) {
             setPendingNavigation("CHAPTERS");
@@ -1282,47 +1349,90 @@ const ExitConfirmModal = ({
           } else {
             navigate("/chapters");
           }
-        } } onGenerate={function (): void {
+        }}
+        onGenerate={function (): void {
           throw new Error("Function not implemented.");
-        } }/>
-
- {!hideBackButton && (
-      <BackButton
-        isInQuiz={isInQuiz}
-        onExitQuiz={() => {
-          setPendingNavigation("HOME");
-          setShowExitConfirm(true);
         }}
       />
-    )}
 
-{showExitConfirm && (
-  <ExitConfirmModal
-    onConfirm={confirmExit}
-    onCancel={cancelExit}
-  />
-)}
+      {!hideBackButton && (
+        <div className="hidden md:block">
+          <BackButton
+            isInQuiz={isInQuiz}
+            onExitQuiz={() => {
+              setPendingNavigation("HOME");
+              setShowExitConfirm(true);
+            }}
+          />
+        </div>
+      )}
 
+      {showExitConfirm && (
+        <ExitConfirmModal onConfirm={confirmExit} onCancel={cancelExit} />
+      )}
 
       {showCelebration && <Celebration />}
-     <main className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-  <Routes>
-    <Route path="/" element={renderHome()} />
-    <Route path="/chapters" element={renderChapters()} />
-    <Route path="/quiz" element={renderQuiz()} />
-    <Route path="/results" element={renderResults()} />
-    <Route path="*" element={<Navigate to="/" />} />
-    <Route
-  path="/chapters/:chapterId"
-  element={<ChapterOptionsPage
-      startChapter={startChapter}
-      startChapterExam={startChapterExam}
-    />
+      <main className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <ScrollToTop />
+        <Routes>
+          <Route path="/" element={renderHome()} />
+          <Route path="/chapters" element={renderChapters()} />
+ <Route
+  path="/quiz"
+  element={
+    sessionStorage.getItem("quiz_locked") === "true"
+      ? <Navigate to="/" replace />
+      : renderQuiz()
   }
 />
 
-  </Routes>
-</main>
+<Route
+  path="/results"
+  element={
+    quizState.isSubmitted
+      ? renderResults()
+      : <Navigate to="/quiz" replace />
+  }
+/>
+          <Route path="*" element={<Navigate to="/" />} />
+          <Route
+            path="/chapters/:chapterId"
+            element={
+              <ChapterOptionsPage
+                startChapter={startChapter}
+                startChapterExam={startChapterExam}
+              />
+            }
+          />
+        </Routes>
+      </main>
+      {showScrollTop && !hideScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="
+  fixed
+  bottom-24 md:bottom-16
+  right-5 md:right-10
+  z-50
+
+  w-11 h-11
+  md:w-12 md:h-12
+
+  rounded-full
+  bg-indigo-600
+  hover:bg-indigo-700
+  text-white
+
+  flex items-center justify-center
+  shadow-xl
+  transition-all duration-300
+  active:scale-95
+"
+        >
+          <ChevronRight className="rotate-[-90deg] w-5 h-5" />
+        </button>
+      )}
+
       <Footer />
     </div>
   );
