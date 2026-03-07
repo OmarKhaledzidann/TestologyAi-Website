@@ -1,6 +1,7 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 
@@ -11,22 +12,38 @@ const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getIte
 export const Route = createRootRoute({
   head: () => ({
     meta: [
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { title: 'Testology — IT Certification Practice Exams' },
       {
-        charSet: 'utf-8',
+        name: 'description',
+        content:
+          'Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.',
       },
+      { name: 'theme-color', content: '#1A2744' },
+      // OpenGraph
+      { property: 'og:type', content: 'website' },
+      { property: 'og:title', content: 'Testology — IT Certification Practice Exams' },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        property: 'og:description',
+        content:
+          'Practice smarter, certify faster. Free practice exams for AWS, Azure, CompTIA, and more.',
       },
+      { property: 'og:image', content: '/favicon-logo.png' },
+      { property: 'og:site_name', content: 'Testology' },
+      // Twitter
+      { name: 'twitter:card', content: 'summary' },
+      { name: 'twitter:title', content: 'Testology — IT Certification Practice Exams' },
       {
-        title: 'TanStack Start Starter',
+        name: 'twitter:description',
+        content:
+          'Free practice exams for AWS, Azure, CompTIA, and more IT certifications.',
       },
+      { name: 'twitter:image', content: '/favicon-logo.png' },
     ],
     links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
+      { rel: 'stylesheet', href: appCss },
+      { rel: 'icon', href: '/favicon-logo.png', type: 'image/png' },
     ],
   }),
   shellComponent: RootDocument,
@@ -39,14 +56,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+      <body className="flex min-h-screen flex-col font-sans antialiased">
         <Header />
-        {children}
+        <ErrorBoundary>
+          <div className="flex-1">{children}</div>
+        </ErrorBoundary>
         <Footer />
         <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
+          config={{ position: 'bottom-right' }}
           plugins={[
             {
               name: 'Tanstack Router',
