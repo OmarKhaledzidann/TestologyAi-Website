@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CertificatesIndexRouteImport } from './routes/certificates/index'
 import { Route as CertificatesCertIdIndexRouteImport } from './routes/certificates/$certId/index'
+import { Route as CertificatesCertIdChaptersChapterIdResultsRouteImport } from './routes/certificates/$certId/chapters/$chapterId/results'
 import { Route as CertificatesCertIdChaptersChapterIdPracticeRouteImport } from './routes/certificates/$certId/chapters/$chapterId/practice'
 import { Route as CertificatesCertIdChaptersChapterIdExamRouteImport } from './routes/certificates/$certId/chapters/$chapterId/exam'
 
@@ -30,6 +31,12 @@ const CertificatesCertIdIndexRoute = CertificatesCertIdIndexRouteImport.update({
   path: '/certificates/$certId/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertificatesCertIdChaptersChapterIdResultsRoute =
+  CertificatesCertIdChaptersChapterIdResultsRouteImport.update({
+    id: '/certificates/$certId/chapters/$chapterId/results',
+    path: '/certificates/$certId/chapters/$chapterId/results',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CertificatesCertIdChaptersChapterIdPracticeRoute =
   CertificatesCertIdChaptersChapterIdPracticeRouteImport.update({
     id: '/certificates/$certId/chapters/$chapterId/practice',
@@ -49,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/certificates/$certId/': typeof CertificatesCertIdIndexRoute
   '/certificates/$certId/chapters/$chapterId/exam': typeof CertificatesCertIdChaptersChapterIdExamRoute
   '/certificates/$certId/chapters/$chapterId/practice': typeof CertificatesCertIdChaptersChapterIdPracticeRoute
+  '/certificates/$certId/chapters/$chapterId/results': typeof CertificatesCertIdChaptersChapterIdResultsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -56,6 +64,7 @@ export interface FileRoutesByTo {
   '/certificates/$certId': typeof CertificatesCertIdIndexRoute
   '/certificates/$certId/chapters/$chapterId/exam': typeof CertificatesCertIdChaptersChapterIdExamRoute
   '/certificates/$certId/chapters/$chapterId/practice': typeof CertificatesCertIdChaptersChapterIdPracticeRoute
+  '/certificates/$certId/chapters/$chapterId/results': typeof CertificatesCertIdChaptersChapterIdResultsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -64,6 +73,7 @@ export interface FileRoutesById {
   '/certificates/$certId/': typeof CertificatesCertIdIndexRoute
   '/certificates/$certId/chapters/$chapterId/exam': typeof CertificatesCertIdChaptersChapterIdExamRoute
   '/certificates/$certId/chapters/$chapterId/practice': typeof CertificatesCertIdChaptersChapterIdPracticeRoute
+  '/certificates/$certId/chapters/$chapterId/results': typeof CertificatesCertIdChaptersChapterIdResultsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -73,6 +83,7 @@ export interface FileRouteTypes {
     | '/certificates/$certId/'
     | '/certificates/$certId/chapters/$chapterId/exam'
     | '/certificates/$certId/chapters/$chapterId/practice'
+    | '/certificates/$certId/chapters/$chapterId/results'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -80,6 +91,7 @@ export interface FileRouteTypes {
     | '/certificates/$certId'
     | '/certificates/$certId/chapters/$chapterId/exam'
     | '/certificates/$certId/chapters/$chapterId/practice'
+    | '/certificates/$certId/chapters/$chapterId/results'
   id:
     | '__root__'
     | '/'
@@ -87,6 +99,7 @@ export interface FileRouteTypes {
     | '/certificates/$certId/'
     | '/certificates/$certId/chapters/$chapterId/exam'
     | '/certificates/$certId/chapters/$chapterId/practice'
+    | '/certificates/$certId/chapters/$chapterId/results'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -95,6 +108,7 @@ export interface RootRouteChildren {
   CertificatesCertIdIndexRoute: typeof CertificatesCertIdIndexRoute
   CertificatesCertIdChaptersChapterIdExamRoute: typeof CertificatesCertIdChaptersChapterIdExamRoute
   CertificatesCertIdChaptersChapterIdPracticeRoute: typeof CertificatesCertIdChaptersChapterIdPracticeRoute
+  CertificatesCertIdChaptersChapterIdResultsRoute: typeof CertificatesCertIdChaptersChapterIdResultsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -118,6 +132,13 @@ declare module '@tanstack/react-router' {
       path: '/certificates/$certId'
       fullPath: '/certificates/$certId/'
       preLoaderRoute: typeof CertificatesCertIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certificates/$certId/chapters/$chapterId/results': {
+      id: '/certificates/$certId/chapters/$chapterId/results'
+      path: '/certificates/$certId/chapters/$chapterId/results'
+      fullPath: '/certificates/$certId/chapters/$chapterId/results'
+      preLoaderRoute: typeof CertificatesCertIdChaptersChapterIdResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/certificates/$certId/chapters/$chapterId/practice': {
@@ -145,6 +166,8 @@ const rootRouteChildren: RootRouteChildren = {
     CertificatesCertIdChaptersChapterIdExamRoute,
   CertificatesCertIdChaptersChapterIdPracticeRoute:
     CertificatesCertIdChaptersChapterIdPracticeRoute,
+  CertificatesCertIdChaptersChapterIdResultsRoute:
+    CertificatesCertIdChaptersChapterIdResultsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

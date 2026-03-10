@@ -82,19 +82,20 @@
 
 ---
 
-## Remaining
-
 ### Step 8: Exit Confirmation
-- [ ] `beforeunload` handler for browser close/refresh (soft guard)
-- [ ] TanStack Router navigation blocker for in-app navigation
-- [ ] Confirmation modal: "Are you sure you want to leave? Your progress will be lost."
-- [ ] On confirm, clear exam localStorage data
-- [ ] Files: `src/hooks/useExitConfirmation.ts`, `src/components/ConfirmModal.tsx`
+- [x] `beforeunload` handler for browser close/refresh (via `enableBeforeUnload` in useBlocker)
+- [x] TanStack Router navigation blocker for in-app navigation (`useBlocker` with `withResolver`)
+- [x] Confirmation modal: "Are you sure you want to leave? Your progress will be lost."
+- [x] On confirm ("Leave"), clears exam localStorage data then proceeds with navigation
+- [x] Hook: `src/hooks/useExitConfirmation.ts`, modal inline in exam page (no separate component needed)
+- [x] TypeScript compiles cleanly
+
+---
 
 ### Step 9: Results Page
-- [ ] Shared results route with `?mode=exam|practice` query parameter
-- [ ] Redirect to chapters page if no data in localStorage
-- [ ] **Exam results** (`?mode=exam`):
+- [x] Shared results route with `?mode=exam|practice` query parameter
+- [x] Redirect to chapters page if no data in localStorage
+- [x] **Exam results** (`?mode=exam`):
   - Score: X/N and percentage
   - Pass threshold: 80%
   - Pass → "Congratulations!" + Za'atar (halfRobot.png) + canvas-confetti
@@ -102,11 +103,16 @@
   - Wrong answers review (user's answer in red/X, correct in green/checkmark)
   - "Try Again" button (clears localStorage, navigates to exam)
   - "Back to Chapters" button
-- [ ] **Practice results** (`?mode=practice`):
+- [x] **Practice results** (`?mode=practice`):
   - Score summary only (no pass/fail, no confetti, no wrong answers review)
   - "Practice Again" button
   - "Back to Chapters" button
-- [ ] Files: `src/routes/certificates/$certId/chapters/$chapterId/results.tsx`, `src/components/ResultsSummary.tsx`, `src/components/WrongAnswerReview.tsx`
+- [x] Files: `src/routes/certificates/$certId/chapters/$chapterId/results.tsx`, `src/components/ResultsSummary.tsx`, `src/components/WrongAnswerReview.tsx`
+- [x] TypeScript compiles cleanly
+
+---
+
+## Remaining
 
 ### Step 10: Polish & Responsiveness
 - [ ] Mobile responsiveness across all pages

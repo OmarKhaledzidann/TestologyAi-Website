@@ -3,7 +3,8 @@ import { Link, createFileRoute, notFound } from '@tanstack/react-router'
 import ExamQuestionCard from '#/components/ExamQuestionCard'
 import Timer from '#/components/Timer'
 import { Button } from '#/components/ui/button'
-import { useExamState } from '#/hooks/useExamState'
+import { useExitConfirmation } from '#/hooks/useExitConfirmation'
+import { useExamState, clearExamData } from '#/hooks/useExamState'
 import { getCertificateById, getChapterById } from '#/utils/data'
 
 export const Route = createFileRoute(
@@ -63,6 +64,9 @@ function ExamPage() {
   const exam = useExamState(certId, chapterId, chapter.questions)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [showTimesUp, setShowTimesUp] = useState(false)
+
+  // Block navigation while exam is running
+  const blocker = useExitConfirmation(exam.status === 'running')
 
   // Auto-submit on timer expiry
   useEffect(() => {
@@ -214,6 +218,39 @@ function ExamPage() {
               </Button>
               <Button className="flex-1" onClick={submitExam}>
                 Confirm Submit
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Exit Confirmation Modal */}
+      {blocker.status === 'blocked' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="mx-4 w-full max-w-md rounded-xl bg-card p-6 shadow-lg">
+            <h2 className="mb-2 text-xl font-bold text-foreground">
+              Leave Exam?
+            </h2>
+            <p className="mb-6 text-sm text-muted-foreground">
+              Are you sure you want to leave? Your progress will be lost.
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={blocker.reset}
+              >
+                Stay
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1"
+                onClick={() => {
+                  clearExamData(certId, chapterId)
+                  blocker.proceed()
+                }}
+              >
+                Leave
               </Button>
             </div>
           </div>
