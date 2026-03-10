@@ -48,7 +48,7 @@ export function clearExamData(certId: string, chapterId: string) {
   localStorage.removeItem(getStorageKey(certId, chapterId));
 }
 
-export type ExamStatus = "prompt" | "running" | "submitting" | "expired";
+type ExamStatus = "prompt" | "running" | "submitting" | "expired";
 
 export function useExamState(
   certId: string,
