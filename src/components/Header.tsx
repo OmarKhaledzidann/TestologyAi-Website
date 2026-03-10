@@ -28,12 +28,13 @@ export default function Header() {
           >
             Home
           </Link>
-          <a
-            href="/certificates"
-            className="rounded-lg px-3 py-2 text-muted-foreground no-underline transition hover:bg-muted hover:text-foreground"
+          <Link
+            to="/certificates"
+            className="rounded-lg px-3 py-2 text-muted-foreground transition hover:bg-muted hover:text-foreground [&.active]:text-foreground"
+            activeProps={{ className: 'rounded-lg px-3 py-2 text-foreground transition hover:bg-muted' }}
           >
             Certificates
-          </a>
+          </Link>
         </div>
 
         {/* Right side: timer slot + theme toggle */}

@@ -23,48 +23,66 @@
 - [x] Create data utility functions (`src/utils/data.ts`): getCertificates, getCertificateById, getChapters, getChapterById
 - [x] TypeScript compiles cleanly
 
+### Step 3: Layout, SEO & Landing Page
+- [x] Create root layout (`src/routes/__root.tsx`) with navbar (Za'atar favicon-logo.png as logo, nav links, exam timer slot in top-right)
+- [x] Configure per-route `<title>`, meta descriptions, OpenGraph tags (use `favicon-logo.png` as `og:image`)
+- [x] Set up sitemap generation at build time (custom Vite plugin in `vite.config.ts`)
+- [x] Build landing page (`src/routes/index.tsx`) with hero section featuring Za'atar (halfRobot.png) and CTA button → `/certificates`
+- [x] Add global error boundary with Za'atar illustration (`src/components/ErrorBoundary.tsx`)
+- [x] Remove starter template `about.tsx`
+- [x] Update Header, Footer, ThemeToggle with Testology branding
+- [x] TypeScript compiles cleanly
+
+---
+
+### Step 4: Certificates Page
+- [x] Build responsive card grid (1 col mobile, 2 tablet, 3 desktop)
+- [x] Each card: logo/icon (lucide Award), title, description, chapter count, "Let's Start" button
+- [x] "Let's Start" navigates to `/certificates/$certId`
+- [x] Updated Header and landing page CTAs to type-safe `<Link>` for `/certificates`
+- [x] SEO: per-route title, description, OpenGraph tags
+- [x] TypeScript compiles cleanly
+
+---
+
+### Step 5: Chapters Page
+- [x] Display certificate info + chapter list with back-link to certificates
+- [x] "All Chapters" card at top with Practice & Exam buttons
+- [x] Individual chapter cards with title, question count, Practice & Exam buttons
+- [x] Route loader with `notFound()` for invalid certId + not-found component with Za'atar
+- [x] SEO: per-route title, description, OpenGraph tags
+- [x] Updated CertificateCard "Let's Start" to type-safe `<Link>`
+- [x] TypeScript compiles cleanly
+
+---
+
+### Step 6: Practice Mode
+- [x] All questions on a single scrollable page, no timer
+- [x] Instant feedback on answer selection (green checkmark / red X + explanation)
+- [x] Submit button at bottom → stores answers in localStorage, navigates to results (`?mode=practice`)
+- [x] Submit disabled until all questions answered (shows progress count)
+- [x] Route loader with `notFound()` for invalid certId/chapterId
+- [x] Updated ChapterCard practice link to type-safe `<Link>`
+- [x] TypeScript compiles cleanly
+
+---
+
+### Step 7: Exam Mode
+- [x] All questions on a single scrollable page
+- [x] 60-minute countdown timer in navbar top-right (portal into `#exam-timer-slot`)
+- [x] No feedback until submit (ExamQuestionCard shows selection only)
+- [x] Question & answer choice shuffling on new attempts
+- [x] localStorage persistence for answers + timer (keyed by certId + chapterId + mode)
+- [x] Resume/restart prompt when returning with existing saved data
+- [x] Submit button → review modal (answered/unanswered count, "Go Back" / "Confirm Submit")
+- [x] Auto-submit on timer expiry ("Time's up!" modal, 3s, then navigate to results)
+- [x] Loading spinner while questions initialize
+- [x] Updated ChapterCard exam link to type-safe `<Link>`
+- [x] TypeScript compiles cleanly
+
 ---
 
 ## Remaining
-
-### Step 3: Layout, SEO & Landing Page
-- [ ] Create root layout (`src/routes/__root.tsx`) with navbar (Za'atar favicon-logo.png as logo, nav links, exam timer slot in top-right)
-- [ ] Configure per-route `<title>`, meta descriptions, OpenGraph tags (use `favicon-logo.png` as `og:image`)
-- [ ] Set up sitemap generation at build time
-- [ ] Build landing page (`src/routes/index.tsx`) with hero section featuring Za'atar (halfRobot.png) and CTA button → `/certificates`
-- [ ] Add global error boundary with Za'atar illustration
-- [ ] Files: `src/routes/__root.tsx`, `src/routes/index.tsx`, `src/components/ErrorBoundary.tsx`
-
-### Step 4: Certificates Page
-- [ ] Build responsive card grid (1 col mobile, 2 tablet, 3 desktop)
-- [ ] Each card: logo/icon, title, description, chapter count, "Let's Start" button
-- [ ] "Let's Start" navigates to `/certificates/$certId`
-- [ ] Files: `src/routes/certificates/index.tsx`, `src/components/CertificateCard.tsx`
-
-### Step 5: Chapters Page
-- [ ] Display certificate info + chapter list
-- [ ] "All Chapters" card at top with Practice & Exam buttons
-- [ ] Individual chapter cards with title, question count, Practice & Exam buttons
-- [ ] Files: `src/routes/certificates/$certId/index.tsx`, `src/components/ChapterCard.tsx`
-
-### Step 6: Practice Mode
-- [ ] All questions on a single scrollable page, no timer
-- [ ] Instant feedback on answer selection (green checkmark / red X + explanation)
-- [ ] Submit button at bottom → navigates to results (`?mode=practice`)
-- [ ] Skeleton loading state during hydration
-- [ ] Files: `src/routes/certificates/$certId/chapters/$chapterId/practice.tsx`, `src/components/QuestionCard.tsx`
-
-### Step 7: Exam Mode
-- [ ] All questions on a single scrollable page
-- [ ] 60-minute countdown timer in navbar top-right
-- [ ] No feedback until submit
-- [ ] Question & answer choice shuffling on new attempts
-- [ ] localStorage persistence for answers + timer (keyed by certId + chapterId + mode)
-- [ ] Resume/restart prompt when returning with existing saved data
-- [ ] Submit button → review modal (answered/unanswered count, "Go Back" / "Confirm Submit")
-- [ ] Auto-submit on timer expiry ("Time's up!" modal, 3s, then navigate to results)
-- [ ] Skeleton loading state during hydration
-- [ ] Files: `src/routes/certificates/$certId/chapters/$chapterId/exam.tsx`, `src/components/ExamQuestionCard.tsx`, `src/components/Timer.tsx`, `src/hooks/useExamState.ts`
 
 ### Step 8: Exit Confirmation
 - [ ] `beforeunload` handler for browser close/refresh (soft guard)

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { buttonVariants } from '#/components/ui/button'
 import { getCertificates } from '#/utils/data'
 
@@ -42,12 +42,12 @@ function HomePage() {
               simulation.
             </p>
             <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
-              <a
-                href="/certificates"
+              <Link
+                to="/certificates"
                 className={buttonVariants({ size: 'lg' }) + ' no-underline'}
               >
                 Get Started
-              </a>
+              </Link>
             </div>
 
             {/* Stats */}
@@ -124,12 +124,12 @@ function HomePage() {
           <p className="mb-6 text-muted-foreground">
             Choose a certification and begin your journey today.
           </p>
-          <a
-            href="/certificates"
+          <Link
+            to="/certificates"
             className={buttonVariants({ size: 'lg' }) + ' no-underline'}
           >
             Browse Certificates
-          </a>
+          </Link>
         </div>
       </section>
     </main>

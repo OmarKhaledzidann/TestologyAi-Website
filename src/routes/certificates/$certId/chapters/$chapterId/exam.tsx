@@ -1,0 +1,224 @@
+import { useState, useEffect } from 'react'
+import { Link, createFileRoute, notFound } from '@tanstack/react-router'
+import ExamQuestionCard from '#/components/ExamQuestionCard'
+import Timer from '#/components/Timer'
+import { Button } from '#/components/ui/button'
+import { useExamState } from '#/hooks/useExamState'
+import { getCertificateById, getChapterById } from '#/utils/data'
+
+export const Route = createFileRoute(
+  '/certificates/$certId/chapters/$chapterId/exam',
+)({
+  loader: ({ params }) => {
+    const certificate = getCertificateById(params.certId)
+    if (!certificate) throw notFound()
+    const chapter = getChapterById(params.certId, params.chapterId)
+    if (!chapter) throw notFound()
+    return { certificate, chapter }
+  },
+  head: ({ loaderData }) => {
+    const certTitle = loaderData?.certificate.title ?? 'Certificate'
+    const chTitle = loaderData?.chapter.title ?? 'Exam'
+    return {
+      meta: [
+        { title: `Exam: ${chTitle} — ${certTitle} — Testology` },
+        {
+          name: 'description',
+          content: `Timed exam for ${chTitle} — ${certTitle}. 60-minute countdown with exam simulation.`,
+        },
+      ],
+    }
+  },
+  notFoundComponent: NotFoundComponent,
+  component: ExamPage,
+})
+
+function NotFoundComponent() {
+  return (
+    <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
+      <img
+        src="/halfRobot.png"
+        alt="Za'atar — Testology mascot"
+        className="mb-6 h-48 w-auto opacity-80"
+      />
+      <h1 className="mb-2 text-2xl font-bold text-foreground">
+        Chapter not found
+      </h1>
+      <p className="mb-6 text-muted-foreground">
+        This chapter doesn't exist. Let's get you back on track.
+      </p>
+      <a
+        href="/certificates"
+        className="text-sm font-medium text-primary hover:underline"
+      >
+        Back to Certificates
+      </a>
+    </main>
+  )
+}
+
+function ExamPage() {
+  const { certificate, chapter } = Route.useLoaderData()
+  const { certId, chapterId } = Route.useParams()
+  const exam = useExamState(certId, chapterId, chapter.questions)
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [showTimesUp, setShowTimesUp] = useState(false)
+
+  // Auto-submit on timer expiry
+  useEffect(() => {
+    if (exam.status === 'expired') {
+      setShowTimesUp(true)
+      const timeout = setTimeout(() => {
+        submitExam()
+      }, 3000)
+      return () => clearTimeout(timeout)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exam.status])
+
+  function submitExam() {
+    // Save final answers for results page
+    const key = `testology:${certId}:${chapterId}:exam`
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        answers: exam.answers,
+        questions: exam.questions,
+      }),
+    )
+    window.location.href = `/certificates/${certId}/chapters/${chapterId}/results?mode=exam`
+  }
+
+  // Resume/Restart prompt
+  if (exam.status === 'prompt') {
+    return (
+      <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
+        <h1 className="mb-2 text-2xl font-bold text-foreground">
+          Resume Exam?
+        </h1>
+        <p className="mb-8 max-w-md text-muted-foreground">
+          You have an in-progress attempt for{' '}
+          <strong>{chapter.title}</strong>. Would you like to resume or
+          start a new exam?
+        </p>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={exam.startNew}>
+            Start New
+          </Button>
+          <Button onClick={exam.resume}>Resume Exam</Button>
+        </div>
+      </main>
+    )
+  }
+
+  // Time's up modal
+  if (showTimesUp) {
+    return (
+      <>
+        <Timer timeRemaining={0} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="rounded-xl bg-card p-8 text-center shadow-lg">
+            <h2 className="mb-2 text-2xl font-bold text-foreground">
+              Time's Up!
+            </h2>
+            <p className="text-muted-foreground">
+              Submitting your answers automatically...
+            </p>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  // Waiting for questions to load
+  if (exam.questions.length === 0) {
+    return (
+      <main className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </main>
+    )
+  }
+
+  return (
+    <>
+      <Timer timeRemaining={exam.timeRemaining} />
+
+      <main className="px-4 py-12 sm:py-16">
+        <div className="mx-auto max-w-3xl">
+          {/* Header */}
+          <div className="mb-8">
+            <Link
+              to="/certificates/$certId"
+              params={{ certId }}
+              className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground"
+            >
+              &larr; Back to {certificate.title}
+            </Link>
+            <h1 className="mb-1 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Exam: {chapter.title}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {exam.answeredCount}/{exam.totalQuestions} answered
+            </p>
+          </div>
+
+          {/* Questions */}
+          <div className="space-y-6">
+            {exam.questions.map((question, index) => (
+              <ExamQuestionCard
+                key={question.id}
+                question={question}
+                index={index}
+                selectedAnswer={exam.answers[question.id]}
+                onSelect={exam.selectAnswer}
+              />
+            ))}
+          </div>
+
+          {/* Submit */}
+          <div className="mt-10 flex justify-center">
+            <Button size="lg" onClick={() => setShowReviewModal(true)}>
+              Submit Exam
+            </Button>
+          </div>
+        </div>
+      </main>
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="mx-4 w-full max-w-md rounded-xl bg-card p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-bold text-foreground">
+              Review Submission
+            </h2>
+            <div className="mb-6 space-y-2 text-sm">
+              <p className="text-foreground">
+                Answered:{' '}
+                <strong className="text-primary">{exam.answeredCount}</strong> /{' '}
+                {exam.totalQuestions}
+              </p>
+              {exam.unansweredCount > 0 && (
+                <p className="text-testology-error">
+                  {exam.unansweredCount} question
+                  {exam.unansweredCount === 1 ? '' : 's'} unanswered
+                </p>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowReviewModal(false)}
+              >
+                Go Back
+              </Button>
+              <Button className="flex-1" onClick={submitExam}>
+                Confirm Submit
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
