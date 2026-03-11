@@ -20,7 +20,7 @@ export const Route = createFileRoute(
     const chTitle = loaderData?.chapter.title ?? "Practice";
     return {
       meta: seo({
-        title: `Practice: ${chTitle} — ${certTitle} — Testology`,
+        title: `Practice: ${chTitle} — ${certTitle} — TestologyAI`,
         description: `Practice ${chTitle} questions for ${certTitle}. Get instant feedback on every answer.`,
         image: `${import.meta.env.BASE_URL}thumbnail.png`,
       }),
@@ -35,7 +35,7 @@ function NotFoundComponent() {
     <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
       <img
         src={`${import.meta.env.BASE_URL}halfRobot.png`}
-        alt="Za'atar — Testology mascot"
+        alt="Za'atar — testologyAI mascot"
         className="mb-6 h-48 w-auto opacity-80"
       />
       <h1 className="mb-2 text-2xl font-bold text-foreground">
@@ -100,7 +100,7 @@ function PracticePage() {
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <img
               src={`${import.meta.env.BASE_URL}halfRobot.png`}
-              alt="Za'atar — Testology mascot"
+              alt="Za'atar — testologyAI mascot"
               className="mb-6 h-40 w-auto opacity-80"
             />
             <p className="text-lg font-medium text-foreground">

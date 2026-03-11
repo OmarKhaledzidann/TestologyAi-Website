@@ -6,7 +6,7 @@ import { seo } from "#/utils/seo";
 export const Route = createFileRoute("/certificates/")({
   head: () => ({
     meta: seo({
-      title: "Certificates — Testology",
+      title: "Certificates — TestologyAI",
       description:
         "Browse IT certification practice exams. AWS Cloud Practitioner, Azure Fundamentals, CompTIA A+, and more.",
       image: `${import.meta.env.BASE_URL}thumbnail.png`,

@@ -9,7 +9,7 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Testology Brand Color Palette */
+/* testologyAI Brand Color Palette */
 :root {
   /* Brand colors */
   --testology-navy: #1a2744;
@@ -22,7 +22,7 @@
   --testology-success: #16a34a;
   --testology-error: #dc2626;
 
-  /* shadcn/ui semantic tokens — Testology themed */
+  /* shadcn/ui semantic tokens — testologyAI themed */
   --background: #ffffff;
   --foreground: #0f172a;
   --card: #ffffff;
@@ -58,7 +58,7 @@ body,
 @theme inline {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  /* Testology brand colors for Tailwind utilities */
+  /* testologyAI brand colors for Tailwind utilities */
   --color-testology-navy: #1a2744;
   --color-testology-blue: #2563eb;
   --color-testology-cyan: #00b4ff;

@@ -5,7 +5,7 @@ import { seo } from "#/utils/seo";
 export const Route = createFileRoute("/$")({
   head: () => ({
     meta: seo({
-      title: "Page Not Found — Testology",
+      title: "Page Not Found — TestologyAI",
       description: "This page does not exist.",
     }),
   }),
@@ -17,7 +17,7 @@ function NotFoundPage() {
     <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
       <img
         src={`${import.meta.env.BASE_URL}halfRobot.png`}
-        alt="Za'atar — Testology mascot"
+        alt="Za'atar — testologyAI mascot"
         className="mb-6 h-48 w-auto opacity-80"
       />
       <h1 className="mb-2 text-2xl font-bold text-foreground">

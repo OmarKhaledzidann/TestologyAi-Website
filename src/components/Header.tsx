@@ -13,7 +13,7 @@ export default function Header() {
         {/* Logo */}
         <Link
           to="/"
-          aria-label="Testology Home"
+          aria-label="testologyAI Home"
           className="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground no-underline"
         >
           <img
@@ -21,7 +21,7 @@ export default function Header() {
             alt=""
             className="h-8 w-8"
           />
-          <span className="hidden sm:inline">Testology</span>
+          <span className="hidden sm:inline">TestologyAI</span>
         </Link>
 
         {isExamRoute ? (

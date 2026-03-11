@@ -6,7 +6,7 @@ import { seo } from "#/utils/seo";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: seo({
-      title: "Testology — IT Certification Practice Exams",
+      title: "TestologyAI — IT Certification Practice Exams",
       description:
         "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
       image: `${import.meta.env.BASE_URL}thumbnail.png`,
@@ -72,7 +72,7 @@ function HomePage() {
           <div className="flex-shrink-0">
             <img
               src={`${import.meta.env.BASE_URL}halfRobot.png`}
-              alt="Za'atar — Testology mascot"
+              alt="Za'atar — testologyAI mascot"
               className="h-64 w-auto drop-shadow-2xl sm:h-80 lg:h-96"
             />
           </div>

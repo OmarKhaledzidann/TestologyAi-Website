@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 const SITE_URL = "https://mamoanwar97.github.io/testologyAi";
@@ -13,12 +13,16 @@ function sitemapPlugin() {
   return {
     name: "generate-sitemap",
     closeBundle() {
+      const certs: { id: string }[] = JSON.parse(
+        readFileSync(
+          resolve(import.meta.dirname, "src/data/certificates.json"),
+          "utf-8",
+        ),
+      );
       const routes = [
         "/",
         "/certificates",
-        "/certificates/aws-cloud-practitioner",
-        "/certificates/azure-fundamentals",
-        "/certificates/comptia-a-plus",
+        ...certs.map((c) => `/certificates/${c.id}`),
       ];
 
       const sitemap = [

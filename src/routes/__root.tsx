@@ -16,9 +16,9 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#1A2744" },
-      { property: "og:site_name", content: "Testology" },
+      { property: "og:site_name", content: "TestologyAI" },
       ...seo({
-        title: "Testology — IT Certification Practice Exams",
+        title: "TestologyAI — IT Certification Practice Exams",
         description:
           "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
         image: `${import.meta.env.BASE_URL}thumbnail.png`,
