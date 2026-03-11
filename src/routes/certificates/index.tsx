@@ -1,24 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import CertificateCard from "#/components/CertificateCard";
 import { getCertificates } from "#/utils/data";
+import { seo } from "#/utils/seo";
 
 export const Route = createFileRoute("/certificates/")({
   head: () => ({
-    meta: [
-      { title: "Certificates — Testology" },
-      {
-        name: "description",
-        content:
-          "Browse IT certification practice exams. AWS Cloud Practitioner, Azure Fundamentals, CompTIA A+, and more.",
-      },
-      { property: "og:title", content: "Certificates — Testology" },
-      {
-        property: "og:description",
-        content:
-          "Browse IT certification practice exams. AWS, Azure, CompTIA, and more.",
-      },
-      { property: "og:image", content: "/thumbnail.png" },
-    ],
+    meta: seo({
+      title: "Certificates — Testology",
+      description:
+        "Browse IT certification practice exams. AWS Cloud Practitioner, Azure Fundamentals, CompTIA A+, and more.",
+      image: `${import.meta.env.BASE_URL}thumbnail.png`,
+    }),
   }),
   component: CertificatesPage,
 });

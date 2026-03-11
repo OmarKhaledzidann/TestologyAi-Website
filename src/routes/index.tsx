@@ -1,17 +1,16 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { buttonVariants } from "#/components/ui/button";
 import { getCertificates } from "#/utils/data";
+import { seo } from "#/utils/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title: "Testology — IT Certification Practice Exams" },
-      {
-        name: "description",
-        content:
-          "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
-      },
-    ],
+    meta: seo({
+      title: "Testology — IT Certification Practice Exams",
+      description:
+        "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
+      image: `${import.meta.env.BASE_URL}thumbnail.png`,
+    }),
   }),
   component: HomePage,
 });

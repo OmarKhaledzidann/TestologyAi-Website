@@ -3,6 +3,7 @@ import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import QuestionCard from "#/components/QuestionCard";
 import { Button } from "#/components/ui/button";
 import { getCertificateById, getChapterById } from "#/utils/data";
+import { seo } from "#/utils/seo";
 
 export const Route = createFileRoute(
   "/certificates/$certId/chapters/$chapterId/practice",
@@ -18,25 +19,11 @@ export const Route = createFileRoute(
     const certTitle = loaderData?.certificate.title ?? "Certificate";
     const chTitle = loaderData?.chapter.title ?? "Practice";
     return {
-      meta: [
-        { title: `Practice: ${chTitle} — ${certTitle} — Testology` },
-        {
-          name: "description",
-          content: `Practice ${chTitle} questions for ${certTitle}. Get instant feedback on every answer.`,
-        },
-        {
-          property: "og:title",
-          content: `Practice: ${chTitle} — ${certTitle} — Testology`,
-        },
-        {
-          property: "og:description",
-          content: `Practice ${chTitle} questions for ${certTitle}.`,
-        },
-        {
-          property: "og:image",
-          content: `${import.meta.env.BASE_URL}thumbnail.png`,
-        },
-      ],
+      meta: seo({
+        title: `Practice: ${chTitle} — ${certTitle} — Testology`,
+        description: `Practice ${chTitle} questions for ${certTitle}. Get instant feedback on every answer.`,
+        image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      }),
     };
   },
   notFoundComponent: NotFoundComponent,

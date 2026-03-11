@@ -3,3 +3,4 @@
 .github
 public
 *.json
+routeTree.gen.ts

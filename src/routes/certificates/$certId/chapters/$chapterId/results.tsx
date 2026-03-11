@@ -6,6 +6,7 @@ import WrongAnswerReview from "#/components/WrongAnswerReview";
 import { Button } from "#/components/ui/button";
 import type { Question } from "#/types";
 import { getCertificateById, getChapterById } from "#/utils/data";
+import { seo } from "#/utils/seo";
 
 const PASS_THRESHOLD = 0.8;
 
@@ -31,25 +32,11 @@ export const Route = createFileRoute(
     const certTitle = loaderData?.certificate.title ?? "Certificate";
     const chTitle = loaderData?.chapter.title ?? "Results";
     return {
-      meta: [
-        { title: `Results: ${chTitle} — ${certTitle} — Testology` },
-        {
-          name: "description",
-          content: `Results for ${chTitle} — ${certTitle}.`,
-        },
-        {
-          property: "og:title",
-          content: `Results: ${chTitle} — ${certTitle} — Testology`,
-        },
-        {
-          property: "og:description",
-          content: `Results for ${chTitle} — ${certTitle}.`,
-        },
-        {
-          property: "og:image",
-          content: `${import.meta.env.BASE_URL}thumbnail.png`,
-        },
-      ],
+      meta: seo({
+        title: `Results: ${chTitle} — ${certTitle} — Testology`,
+        description: `Results for ${chTitle} — ${certTitle}.`,
+        image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      }),
     };
   },
   notFoundComponent: NotFoundComponent,

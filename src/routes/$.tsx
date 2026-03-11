@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { buttonVariants } from "#/components/ui/button";
+import { seo } from "#/utils/seo";
 
 export const Route = createFileRoute("/$")({
   head: () => ({
-    meta: [
-      { title: "Page Not Found — Testology" },
-      { name: "description", content: "This page does not exist." },
-    ],
+    meta: seo({
+      title: "Page Not Found — Testology",
+      description: "This page does not exist.",
+    }),
   }),
   component: NotFoundPage,
 });

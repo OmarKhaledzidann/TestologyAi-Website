@@ -1,6 +1,7 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import ChapterCard from "#/components/ChapterCard";
 import { getCertificateById, getChapters } from "#/utils/data";
+import { seo } from "#/utils/seo";
 
 export const Route = createFileRoute("/certificates/$certId/")({
   loader: ({ params }) => {
@@ -11,22 +12,13 @@ export const Route = createFileRoute("/certificates/$certId/")({
     const chapters = getChapters(params.certId);
     return { certificate, chapters };
   },
-  head: ({ loaderData }) => {
-    const title = loaderData?.certificate.title ?? "Certificate";
-    const description = loaderData?.certificate.description ?? "";
-    return {
-      meta: [
-        { title: `${title} — Testology` },
-        { name: "description", content: description },
-        { property: "og:title", content: `${title} — Testology` },
-        { property: "og:description", content: description },
-        {
-          property: "og:image",
-          content: `${import.meta.env.BASE_URL}thumbnail.png`,
-        },
-      ],
-    };
-  },
+  head: ({ loaderData }) => ({
+    meta: seo({
+      title: `${loaderData?.certificate.title ?? "Certificate"} — Testology`,
+      description: loaderData?.certificate.description ?? "",
+      image: `${import.meta.env.BASE_URL}thumbnail.png`,
+    }),
+  }),
   notFoundComponent: NotFoundComponent,
   component: ChaptersPage,
 });

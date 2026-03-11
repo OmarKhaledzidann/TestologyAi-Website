@@ -6,6 +6,7 @@ import { Button } from "#/components/ui/button";
 import { useExitConfirmation } from "#/hooks/useExitConfirmation";
 import { useExamState, clearExamData } from "#/hooks/useExamState";
 import { getCertificateById, getChapterById } from "#/utils/data";
+import { seo } from "#/utils/seo";
 
 export const Route = createFileRoute(
   "/certificates/$certId/chapters/$chapterId/exam",
@@ -21,25 +22,11 @@ export const Route = createFileRoute(
     const certTitle = loaderData?.certificate.title ?? "Certificate";
     const chTitle = loaderData?.chapter.title ?? "Exam";
     return {
-      meta: [
-        { title: `Exam: ${chTitle} — ${certTitle} — Testology` },
-        {
-          name: "description",
-          content: `Timed exam for ${chTitle} — ${certTitle}. 60-minute countdown with exam simulation.`,
-        },
-        {
-          property: "og:title",
-          content: `Exam: ${chTitle} — ${certTitle} — Testology`,
-        },
-        {
-          property: "og:description",
-          content: `Timed exam for ${chTitle} — ${certTitle}.`,
-        },
-        {
-          property: "og:image",
-          content: `${import.meta.env.BASE_URL}favicon-logo.png`,
-        },
-      ],
+      meta: seo({
+        title: `Exam: ${chTitle} — ${certTitle} — Testology`,
+        description: `Timed exam for ${chTitle} — ${certTitle}. 60-minute countdown with exam simulation.`,
+        image: `${import.meta.env.BASE_URL}favicon-logo.png`,
+      }),
     };
   },
   notFoundComponent: NotFoundComponent,

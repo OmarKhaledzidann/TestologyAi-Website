@@ -4,6 +4,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import ErrorBoundary from "../components/ErrorBoundary";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { seo } from "../utils/seo";
 
 import appCss from "../styles.css?url";
 
@@ -14,44 +15,14 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Testology — IT Certification Practice Exams" },
-      {
-        name: "description",
-        content:
-          "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
-      },
       { name: "theme-color", content: "#1A2744" },
-      // OpenGraph
-      { property: "og:type", content: "website" },
-      {
-        property: "og:title",
-        content: "Testology — IT Certification Practice Exams",
-      },
-      {
-        property: "og:description",
-        content:
-          "Practice smarter, certify faster. Free practice exams for AWS, Azure, CompTIA, and more.",
-      },
-      {
-        property: "og:image",
-        content: `${import.meta.env.BASE_URL}thumbnail.png`,
-      },
       { property: "og:site_name", content: "Testology" },
-      // Twitter
-      { name: "twitter:card", content: "summary" },
-      {
-        name: "twitter:title",
-        content: "Testology — IT Certification Practice Exams",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Free practice exams for AWS, Azure, CompTIA, and more IT certifications.",
-      },
-      {
-        name: "twitter:image",
-        content: `${import.meta.env.BASE_URL}thumbnail.png`,
-      },
+      ...seo({
+        title: "Testology — IT Certification Practice Exams",
+        description:
+          "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
+        image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      }),
     ],
     links: [
       { rel: "stylesheet", href: appCss },
