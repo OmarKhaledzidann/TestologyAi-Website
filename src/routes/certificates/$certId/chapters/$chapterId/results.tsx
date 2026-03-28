@@ -89,13 +89,9 @@ function ResultsPage() {
   let questions: Question[] = chapter.questions;
 
   if (raw) {
-    if (mode === "exam") {
-      const examData: ExamData = JSON.parse(raw);
-      answers = examData.answers;
-      questions = examData.questions;
-    } else {
-      answers = JSON.parse(raw);
-    }
+    const parsed: ExamData = JSON.parse(raw);
+    answers = parsed.answers;
+    questions = parsed.questions;
   }
 
   // Calculate score
@@ -188,10 +184,8 @@ function ResultsPage() {
           </Link>
         </div>
 
-        {/* Wrong answers review — exam mode only */}
-        {mode === "exam" && (
-          <WrongAnswerReview questions={questions} answers={answers} />
-        )}
+        {/* Wrong answers review */}
+        <WrongAnswerReview questions={questions} answers={answers} />
       </div>
     </main>
   );

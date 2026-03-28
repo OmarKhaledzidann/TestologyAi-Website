@@ -1,29 +1,19 @@
-import { useState } from "react";
-import { Check, X } from "lucide-react";
 import { cn } from "#/lib/utils";
 import type { Question } from "#/types";
 
 interface QuestionCardProps {
   question: Question;
   index: number;
+  selectedAnswer: string | undefined;
   onAnswer: (questionId: string, answerId: string) => void;
 }
 
 export default function QuestionCard({
   question,
   index,
+  selectedAnswer,
   onAnswer,
 }: QuestionCardProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const answered = selectedId !== null;
-  const isCorrect = selectedId === question.correctAnswer;
-
-  function handleSelect(optionId: string) {
-    if (answered) return;
-    setSelectedId(optionId);
-    onAnswer(question.id, optionId);
-  }
-
   return (
     <fieldset className="rounded-xl border border-border bg-card p-4 sm:p-6">
       <legend className="mb-4 text-base font-medium text-foreground">
@@ -37,21 +27,7 @@ export default function QuestionCard({
         aria-label={`Question ${index + 1}`}
       >
         {question.options.map((option) => {
-          const isSelected = selectedId === option.id;
-          const isCorrectOption = option.id === question.correctAnswer;
-
-          let optionStyle =
-            "border-border bg-background hover:bg-muted cursor-pointer";
-          if (answered) {
-            if (isCorrectOption) {
-              optionStyle =
-                "border-testology-success/50 bg-testology-success/10";
-            } else if (isSelected && !isCorrect) {
-              optionStyle = "border-testology-error/50 bg-testology-error/10";
-            } else {
-              optionStyle = "border-border bg-background opacity-60";
-            }
-          }
+          const isSelected = selectedAnswer === option.id;
 
           return (
             <button
@@ -59,40 +35,29 @@ export default function QuestionCard({
               type="button"
               role="radio"
               aria-checked={isSelected}
-              onClick={() => handleSelect(option.id)}
-              disabled={answered}
+              onClick={() => onAnswer(question.id, option.id)}
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition sm:px-4 sm:py-3",
-                optionStyle,
-                answered && "cursor-default",
+                isSelected
+                  ? "border-primary bg-primary/10"
+                  : "border-border bg-background hover:bg-muted",
               )}
             >
+              <span
+                className={cn(
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-medium",
+                  isSelected
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/40 text-muted-foreground",
+                )}
+              >
+                {option.id.toUpperCase()}
+              </span>
               <span className="flex-1 text-foreground">{option.text}</span>
-              {answered && isCorrectOption && (
-                <Check
-                  className="h-4 w-4 shrink-0 text-testology-success"
-                  aria-label="Correct answer"
-                />
-              )}
-              {answered && isSelected && !isCorrect && (
-                <X
-                  className="h-4 w-4 shrink-0 text-testology-error"
-                  aria-label="Incorrect answer"
-                />
-              )}
             </button>
           );
         })}
       </div>
-
-      {answered && question.explanation && (
-        <div
-          className="mt-4 rounded-lg bg-muted px-3 py-2.5 text-sm text-muted-foreground sm:px-4 sm:py-3"
-          aria-live="polite"
-        >
-          {question.explanation}
-        </div>
-      )}
     </fieldset>
   );
 }

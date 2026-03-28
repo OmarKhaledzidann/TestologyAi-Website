@@ -21,7 +21,7 @@ export const Route = createFileRoute(
     return {
       meta: seo({
         title: `Practice: ${chTitle} — ${certTitle} — TestologyAI`,
-        description: `Practice ${chTitle} questions for ${certTitle}. Get instant feedback on every answer.`,
+        description: `Practice ${chTitle} questions for ${certTitle}. Review your answers after submission.`,
         image: `${import.meta.env.BASE_URL}thumbnail.png`,
       }),
     };
@@ -60,7 +60,10 @@ function PracticePage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   const handleAnswer = useCallback((questionId: string, answerId: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answerId }));
+    setAnswers((prev) => {
+      const updated = { ...prev, [questionId]: answerId };
+      return updated;
+    });
   }, []);
 
   const totalQuestions = chapter.questions.length;
@@ -68,9 +71,12 @@ function PracticePage() {
   const allAnswered = answeredCount === totalQuestions;
 
   function handleSubmit() {
-    // Store answers in localStorage for the results page
+    // Store answers and questions in localStorage for the results page
     const key = `testology:${certId}:${chapterId}:practice`;
-    localStorage.setItem(key, JSON.stringify(answers));
+    localStorage.setItem(
+      key,
+      JSON.stringify({ answers, questions: chapter.questions }),
+    );
     window.location.href = `${import.meta.env.BASE_URL}certificates/${certId}/chapters/${chapterId}/results?mode=practice`;
   }
 
@@ -90,8 +96,7 @@ function PracticePage() {
             Practice: {chapter.title}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {answeredCount}/{totalQuestions} answered — instant feedback on each
-            question
+            {answeredCount}/{totalQuestions} answered
           </p>
         </div>
 
@@ -118,6 +123,7 @@ function PracticePage() {
                   key={question.id}
                   question={question}
                   index={index}
+                  selectedAnswer={answers[question.id]}
                   onAnswer={handleAnswer}
                 />
               ))}
