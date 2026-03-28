@@ -84,7 +84,7 @@ function HomePage() {
 
             {/* Floating robot */}
             <img
-              src={`${import.meta.env.BASE_URL}halfRobot.png`}
+              src={`${import.meta.env.BASE_URL}robot.png`}
               alt="Za'atar — testologyAI mascot"
               className="animate-float h-64 w-auto drop-shadow-2xl sm:h-80 lg:h-96"
             />
