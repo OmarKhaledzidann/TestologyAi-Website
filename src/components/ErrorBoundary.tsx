@@ -31,6 +31,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           <img
             src={`${import.meta.env.BASE_URL}robot.png`}
             alt="Za'atar — Testology mascot looking confused"
+            loading="lazy"
             className="mb-8 h-48 w-auto opacity-80 sm:h-64"
           />
           <h1 className="mb-2 text-2xl font-bold text-foreground">

@@ -1,7 +1,8 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import ChapterCard from "#/components/ChapterCard";
 import { getCertificateById, getChapters } from "#/utils/data";
-import { seo } from "#/utils/seo";
+import { jsonLd, safeJsonLd } from "#/utils/jsonLd";
+import { seo, seoLinks } from "#/utils/seo";
 
 export const Route = createFileRoute("/certificates/$certId/")({
   loader: ({ params }) => {
@@ -12,12 +13,14 @@ export const Route = createFileRoute("/certificates/$certId/")({
     const chapters = getChapters(params.certId);
     return { certificate, chapters };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData, params }) => ({
     meta: seo({
       title: `${loaderData?.certificate.title ?? "Certificate"} — TestologyAI`,
       description: loaderData?.certificate.description ?? "",
       image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      path: `/certificates/${params.certId}`,
     }),
+    links: seoLinks(`/certificates/${params.certId}`),
   }),
   notFoundComponent: NotFoundComponent,
   component: ChaptersPage,
@@ -29,6 +32,7 @@ function NotFoundComponent() {
       <img
         src={`${import.meta.env.BASE_URL}halfRobot.png`}
         alt="Za'atar — testologyAI mascot"
+        loading="lazy"
         className="mb-6 h-48 w-auto opacity-80"
       />
       <h1 className="mb-2 text-2xl font-bold text-foreground">
@@ -47,6 +51,15 @@ function NotFoundComponent() {
   );
 }
 
+function CourseJsonLd({ cert }: { cert: { id: string; title: string; description: string } }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd.course(cert)) }}
+    />
+  );
+}
+
 function ChaptersPage() {
   const { certificate, chapters } = Route.useLoaderData();
 
@@ -55,6 +68,7 @@ function ChaptersPage() {
 
   return (
     <main className="px-4 py-12 sm:py-16">
+      <CourseJsonLd cert={certificate} />
       <div className="mx-auto max-w-4xl">
         {/* Certificate info */}
         <div className="mb-10">

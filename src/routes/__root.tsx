@@ -5,6 +5,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { seo } from "../utils/seo";
+import { jsonLd, safeJsonLd } from "../utils/jsonLd";
 
 import appCss from "../styles.css?url";
 
@@ -25,6 +26,12 @@ export const Route = createRootRoute({
       }),
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
       { rel: "stylesheet", href: appCss },
       {
         rel: "icon",
@@ -46,6 +53,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd.organization()) }}
+        />
         <HeadContent />
       </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">

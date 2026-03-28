@@ -18,6 +18,7 @@ function NotFoundPage() {
       <img
         src={`${import.meta.env.BASE_URL}halfRobot.png`}
         alt="Za'atar — testologyAI mascot"
+        loading="lazy"
         className="mb-6 h-48 w-auto opacity-80"
       />
       <h1 className="mb-2 text-2xl font-bold text-foreground">

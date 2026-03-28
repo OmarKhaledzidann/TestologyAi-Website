@@ -1,7 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { buttonVariants } from "#/components/ui/button";
 import { getCertificates } from "#/utils/data";
-import { seo } from "#/utils/seo";
+import { seo, seoLinks } from "#/utils/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -10,7 +10,9 @@ export const Route = createFileRoute("/")({
       description:
         "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
       image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      path: "/",
     }),
+    links: seoLinks("/"),
   }),
   component: HomePage,
 });
@@ -68,12 +70,23 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Za'atar mascot */}
-          <div className="flex-shrink-0">
+          {/* Za'atar mascot with speech bubble */}
+          <div className="flex flex-shrink-0 flex-col items-center gap-4">
+            {/* Speech bubble */}
+            <div className="speech-bubble animate-fade-in-up max-w-xs text-sm text-testology-sky">
+              <p className="font-medium italic">
+                "Every expert was once a beginner. Let's get you certified!"
+              </p>
+              <p className="mt-1 text-xs font-semibold text-testology-cyan">
+                — Za'atar
+              </p>
+            </div>
+
+            {/* Floating robot */}
             <img
               src={`${import.meta.env.BASE_URL}halfRobot.png`}
               alt="Za'atar — testologyAI mascot"
-              className="h-64 w-auto drop-shadow-2xl sm:h-80 lg:h-96"
+              className="animate-float h-64 w-auto drop-shadow-2xl sm:h-80 lg:h-96"
             />
           </div>
         </div>

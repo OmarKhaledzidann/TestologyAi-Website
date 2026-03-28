@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import CertificateCard from "#/components/CertificateCard";
 import { getCertificates } from "#/utils/data";
-import { seo } from "#/utils/seo";
+import { seo, seoLinks } from "#/utils/seo";
 
 export const Route = createFileRoute("/certificates/")({
   head: () => ({
@@ -10,7 +10,9 @@ export const Route = createFileRoute("/certificates/")({
       description:
         "Browse IT certification practice exams. AWS Cloud Practitioner, Azure Fundamentals, CompTIA A+, and more.",
       image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      path: "/certificates",
     }),
+    links: seoLinks("/certificates"),
   }),
   component: CertificatesPage,
 });

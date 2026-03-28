@@ -6,7 +6,7 @@ import { Button } from "#/components/ui/button";
 import { useExitConfirmation } from "#/hooks/useExitConfirmation";
 import { useExamState, clearExamData } from "#/hooks/useExamState";
 import { getCertificateById, getChapterById } from "#/utils/data";
-import { seo } from "#/utils/seo";
+import { seo, seoLinks } from "#/utils/seo";
 
 export const Route = createFileRoute(
   "/certificates/$certId/chapters/$chapterId/exam",
@@ -18,15 +18,18 @@ export const Route = createFileRoute(
     if (!chapter) throw notFound();
     return { certificate, chapter };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const certTitle = loaderData?.certificate.title ?? "Certificate";
     const chTitle = loaderData?.chapter.title ?? "Exam";
+    const path = `/certificates/${params.certId}/chapters/${params.chapterId}/exam`;
     return {
       meta: seo({
         title: `Exam: ${chTitle} — ${certTitle} — TestologyAI`,
         description: `Timed exam for ${chTitle} — ${certTitle}. 60-minute countdown with exam simulation.`,
         image: `${import.meta.env.BASE_URL}favicon-logo.png`,
+        path,
       }),
+      links: seoLinks(path),
     };
   },
   notFoundComponent: NotFoundComponent,

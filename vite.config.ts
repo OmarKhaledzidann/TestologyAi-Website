@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
-const SITE_URL = "https://mamoanwar97.github.io/testologyAi";
+import { SITE_URL } from "./src/utils/constants";
 
 function sitemapPlugin() {
   return {
@@ -22,7 +22,17 @@ function sitemapPlugin() {
       const routes = [
         "/",
         "/certificates",
-        ...certs.map((c) => `/certificates/${c.id}`),
+        ...certs.flatMap((c) => [
+          `/certificates/${c.id}`,
+          ...c.chapters.map(
+            (ch: string) =>
+              `/certificates/${c.id}/chapters/${ch}/practice`,
+          ),
+          ...c.chapters.map(
+            (ch: string) =>
+              `/certificates/${c.id}/chapters/${ch}/exam`,
+          ),
+        ]),
       ];
 
       const sitemap = [

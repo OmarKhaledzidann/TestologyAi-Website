@@ -1,14 +1,20 @@
+import { SITE_URL } from "./constants";
+
 export const seo = ({
   title,
   description,
   keywords,
   image,
+  path,
 }: {
   title: string;
   description?: string;
   image?: string;
   keywords?: string;
+  path?: string;
 }) => {
+  const canonicalUrl = path ? `${SITE_URL}${path}` : undefined;
+
   const tags = [
     { title },
     { name: "description", content: description },
@@ -16,10 +22,11 @@ export const seo = ({
     { property: "og:type", content: "website" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
+    ...(canonicalUrl
+      ? [{ property: "og:url", content: canonicalUrl }]
+      : []),
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
-    // { name: "twitter:creator", content: "@tannerlinsley" },
-    // { name: "twitter:site", content: "@tannerlinsley" },
     ...(image
       ? [
           { property: "og:image", content: image },
@@ -30,4 +37,9 @@ export const seo = ({
   ];
 
   return tags;
+};
+
+export const seoLinks = (path?: string) => {
+  if (!path) return [];
+  return [{ rel: "canonical", href: `${SITE_URL}${path}` }];
 };

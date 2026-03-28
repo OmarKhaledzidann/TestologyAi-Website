@@ -6,7 +6,7 @@ import WrongAnswerReview from "#/components/WrongAnswerReview";
 import { Button } from "#/components/ui/button";
 import type { Question } from "#/types";
 import { getCertificateById, getChapterById } from "#/utils/data";
-import { seo } from "#/utils/seo";
+import { seo, seoLinks } from "#/utils/seo";
 
 const PASS_THRESHOLD = 0.8;
 
@@ -28,15 +28,18 @@ export const Route = createFileRoute(
     if (!chapter) throw notFound();
     return { certificate, chapter };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const certTitle = loaderData?.certificate.title ?? "Certificate";
     const chTitle = loaderData?.chapter.title ?? "Results";
+    const path = `/certificates/${params.certId}/chapters/${params.chapterId}/results`;
     return {
       meta: seo({
         title: `Results: ${chTitle} — ${certTitle} — TestologyAI`,
         description: `Results for ${chTitle} — ${certTitle}.`,
         image: `${import.meta.env.BASE_URL}thumbnail.png`,
+        path,
       }),
+      links: seoLinks(path),
     };
   },
   notFoundComponent: NotFoundComponent,
