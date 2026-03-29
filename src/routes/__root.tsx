@@ -22,7 +22,7 @@ export const Route = createRootRoute({
         title: "TestologyAI — IT Certification Practice Exams",
         description:
           "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
-        image: `${import.meta.env.BASE_URL}thumbnail.png`,
+        image: `${import.meta.env.BASE_URL}thumbnail.webp`,
       }),
     ],
     links: [
@@ -40,7 +40,7 @@ export const Route = createRootRoute({
       },
       {
         rel: "icon",
-        href: `${import.meta.env.BASE_URL}thumbnail.png`,
+        href: `${import.meta.env.BASE_URL}thumbnail.webp`,
         type: "image/png",
       },
     ],
@@ -55,7 +55,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd.organization()) }}
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLd(jsonLd.organization()),
+          }}
         />
         <HeadContent />
       </head>

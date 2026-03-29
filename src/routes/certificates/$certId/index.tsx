@@ -17,7 +17,7 @@ export const Route = createFileRoute("/certificates/$certId/")({
     meta: seo({
       title: `${loaderData?.certificate.title ?? "Certificate"} — TestologyAI`,
       description: loaderData?.certificate.description ?? "",
-      image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      image: `${import.meta.env.BASE_URL}thumbnail.webp`,
       path: `/certificates/${params.certId}`,
     }),
     links: seoLinks(`/certificates/${params.certId}`),
@@ -30,7 +30,7 @@ function NotFoundComponent() {
   return (
     <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
       <img
-        src={`${import.meta.env.BASE_URL}halfRobot.png`}
+        src={`${import.meta.env.BASE_URL}halfRobot.webp`}
         alt="Za'atar — testologyAI mascot"
         loading="lazy"
         className="mb-6 h-48 w-auto opacity-80"
@@ -51,7 +51,11 @@ function NotFoundComponent() {
   );
 }
 
-function CourseJsonLd({ cert }: { cert: { id: string; title: string; description: string } }) {
+function CourseJsonLd({
+  cert,
+}: {
+  cert: { id: string; title: string; description: string };
+}) {
   return (
     <script
       type="application/ld+json"

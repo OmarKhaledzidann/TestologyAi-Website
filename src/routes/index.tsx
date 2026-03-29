@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       title: "TestologyAI — IT Certification Practice Exams",
       description:
         "Practice smarter, certify faster. Free practice exams and study tools for AWS, Azure, CompTIA, and more IT certifications.",
-      image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      image: `${import.meta.env.BASE_URL}thumbnail.webp`,
       path: "/",
     }),
     links: seoLinks("/"),
@@ -84,7 +84,7 @@ function HomePage() {
 
             {/* Floating robot */}
             <img
-              src={`${import.meta.env.BASE_URL}robot.png`}
+              src={`${import.meta.env.BASE_URL}robot.webp`}
               alt="Za'atar — testologyAI mascot"
               className="animate-float h-64 w-auto drop-shadow-2xl sm:h-80 lg:h-96"
             />

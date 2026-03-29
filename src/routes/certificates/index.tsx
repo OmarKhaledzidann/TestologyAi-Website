@@ -9,7 +9,7 @@ export const Route = createFileRoute("/certificates/")({
       title: "Certificates — TestologyAI",
       description:
         "Browse IT certification practice exams. AWS Cloud Practitioner, Azure Fundamentals, CompTIA A+, and more.",
-      image: `${import.meta.env.BASE_URL}thumbnail.png`,
+      image: `${import.meta.env.BASE_URL}thumbnail.webp`,
       path: "/certificates",
     }),
     links: seoLinks("/certificates"),

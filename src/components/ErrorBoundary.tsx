@@ -29,7 +29,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
           <img
-            src={`${import.meta.env.BASE_URL}robot.png`}
+            src={`${import.meta.env.BASE_URL}robot.webp`}
             alt="Za'atar — Testology mascot looking confused"
             loading="lazy"
             className="mb-8 h-48 w-auto opacity-80 sm:h-64"

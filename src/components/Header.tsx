@@ -63,7 +63,7 @@ export default function Header() {
             aria-label="Omar Zidan's LinkedIn profile"
           >
             <img
-              src={`${import.meta.env.BASE_URL}avatar.png`}
+              src={`${import.meta.env.BASE_URL}avatar.webp`}
               alt="User avatar"
               className="h-12 w-12 rounded-full border-2 border-border object-cover transition hover:border-primary"
             />

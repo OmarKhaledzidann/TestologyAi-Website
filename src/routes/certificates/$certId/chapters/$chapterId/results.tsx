@@ -36,7 +36,7 @@ export const Route = createFileRoute(
       meta: seo({
         title: `Results: ${chTitle} — ${certTitle} — TestologyAI`,
         description: `Results for ${chTitle} — ${certTitle}.`,
-        image: `${import.meta.env.BASE_URL}thumbnail.png`,
+        image: `${import.meta.env.BASE_URL}thumbnail.webp`,
         path,
       }),
       links: seoLinks(path),
@@ -50,7 +50,7 @@ function NotFoundComponent() {
   return (
     <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
       <img
-        src={`${import.meta.env.BASE_URL}halfRobot.png`}
+        src={`${import.meta.env.BASE_URL}halfRobot.webp`}
         alt="Za'atar — testologyAI mascot"
         className="mb-6 h-48 w-auto opacity-80"
       />
@@ -89,7 +89,8 @@ function ResultsPage() {
 
   // Parse stored data
   let answers: Record<string, string> = {};
-  let questions: Question[] = mode === "exam" ? chapter.examQuestions : chapter.practiceQuestions;
+  let questions: Question[] =
+    mode === "exam" ? chapter.examQuestions : chapter.practiceQuestions;
 
   if (raw) {
     const parsed: ExamData = JSON.parse(raw);
@@ -162,7 +163,7 @@ function ResultsPage() {
         {/* Za'atar mascot */}
         <div className="mb-6 flex justify-center">
           <img
-            src={`${import.meta.env.BASE_URL}halfRobot.png`}
+            src={`${import.meta.env.BASE_URL}halfRobot.webp`}
             alt="Za'atar — testologyAI mascot"
             className="h-40 w-auto"
           />

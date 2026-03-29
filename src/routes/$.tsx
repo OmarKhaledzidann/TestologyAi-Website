@@ -16,7 +16,7 @@ function NotFoundPage() {
   return (
     <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
       <img
-        src={`${import.meta.env.BASE_URL}halfRobot.png`}
+        src={`${import.meta.env.BASE_URL}halfRobot.webp`}
         alt="Za'atar — testologyAI mascot"
         loading="lazy"
         className="mb-6 h-48 w-auto opacity-80"

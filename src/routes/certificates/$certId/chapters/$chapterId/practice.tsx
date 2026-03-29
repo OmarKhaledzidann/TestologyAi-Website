@@ -23,7 +23,7 @@ export const Route = createFileRoute(
       meta: seo({
         title: `Practice: ${chTitle} — ${certTitle} — TestologyAI`,
         description: `Practice ${chTitle} questions for ${certTitle}. Review your answers after submission.`,
-        image: `${import.meta.env.BASE_URL}thumbnail.png`,
+        image: `${import.meta.env.BASE_URL}thumbnail.webp`,
         path,
       }),
       links: seoLinks(path),
@@ -37,7 +37,7 @@ function NotFoundComponent() {
   return (
     <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
       <img
-        src={`${import.meta.env.BASE_URL}halfRobot.png`}
+        src={`${import.meta.env.BASE_URL}halfRobot.webp`}
         alt="Za'atar — testologyAI mascot"
         className="mb-6 h-48 w-auto opacity-80"
       />
@@ -107,7 +107,7 @@ function PracticePage() {
         {totalQuestions === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <img
-              src={`${import.meta.env.BASE_URL}halfRobot.png`}
+              src={`${import.meta.env.BASE_URL}halfRobot.webp`}
               alt="Za'atar — testologyAI mascot"
               className="mb-6 h-40 w-auto opacity-80"
             />
